@@ -15,31 +15,35 @@ class toXmlUI(QtGui.QDialog):
     def __init__(self, parent=None):
         super(toXmlUI, self).__init__(parent)
 
-        self.setWindowTitle(self.tr("To XML"))
+        self.setWindowTitle(self.trUtf8("Excel to XML"))
         self.setWindowFlags(QtCore.Qt.WindowSystemMenuHint)
 
-        self.resize(450, 290)
-
+        self.resize(450, 200)
+        
         self.execlname = QtGui.QLabel(self)
-        self.execlname.setText(self.tr("File Name:"))
+        self.execlname.setText(self.trUtf8("用例文件"))
         self.execlnameLineEdit = QtGui.QLineEdit(self)  
+        self.execlnameLineEdit.setPlaceholderText(u"测试用例地址，格式如:D:/testcase.xls")
         
         self.sheetname = QtGui.QLabel(self)
-        self.sheetname.setText(self.tr("Sheet Name:"))
+        self.sheetname.setText(self.trUtf8("表格名"))
         self.sheetnameLineEdit = QtGui.QLineEdit(self) 
+        self.sheetnameLineEdit.setPlaceholderText(u"表格名称，格式如:Sheet1")
         
         
         self.output = QtGui.QLabel(self)
-        self.output.setText(self.tr("Output folder:"))
+        self.output.setText(self.trUtf8("输出文件夹"))
         self.outputLineEdit = QtGui.QLineEdit(self) 
+        self.outputLineEdit.setPlaceholderText(u"输出文件夹，格式如:D:/testcasefolder")
       
         self.savename = QtGui.QLabel(self)
-        self.savename.setText(self.tr("XML Name:"))
-        self.savenameLineEdit = QtGui.QLineEdit(self)   
+        self.savename.setText(self.trUtf8("XML文件名"))
+        self.savenameLineEdit = QtGui.QLineEdit(self)  
+        self.savenameLineEdit.setPlaceholderText(u"生成的XML文件名，格式如：testcase") 
         
 
-        self.okButton = QtGui.QPushButton(self.tr("OK"))
-        self.cancelButton =  QtGui.QPushButton(self.tr("Cancel"))
+        self.okButton = QtGui.QPushButton(self.trUtf8("确定"))
+        self.cancelButton =  QtGui.QPushButton(self.trUtf8("取消"))
 
 
 
@@ -50,7 +54,7 @@ class toXmlUI(QtGui.QDialog):
 
         self.errorTipLable = QtGui.QLabel()
         self.errorTipLable.setObjectName("tip")
-        self.errorTipLable.hide()
+
 
 
 
@@ -118,12 +122,12 @@ class toXmlUI(QtGui.QDialog):
                     if os.path.exists(output):
                         aa =exportxml.changetoxml(execlname,sheetname,output,savename)
                         aa.run()
-                        self.errorTipLable.setText(self.tr("succeful."))
+                        self.errorTipLable.setText(self.tr("Succeful."))
                     else:
                         os.mkdir(output)
                         aa =exportxml.changetoxml(execlname,sheetname,output,savename)
                         aa.run()
-                        self.errorTipLable.setText(self.tr("succeful."))
+                        self.errorTipLable.setText(self.tr("Succeful."))
                 else:
                     self.errorTipLable.setText(self.tr("The sheet name is not existed."))
         
@@ -131,4 +135,3 @@ class toXmlUI(QtGui.QDialog):
             
             else:
                 self.errorTipLable.setText(self.tr("The excel file is not existed."))
-     

@@ -21,15 +21,15 @@ class MainWindow(QtGui.QMainWindow):
 
         self.statusBar().showMessage('statusbar:Ready')
         menubar = self.menuBar()
-        toolMenu = menubar.addMenu('&Tool')
-        helpmenu = menubar.addMenu('&Help')
-        toXmlAction = self.createAction('&ToXml', self.toXml)
+        toolMenu = menubar.addMenu(u'&工具')
+        helpmenu = menubar.addMenu(u'&帮助')
+        toXmlAction = self.createAction(u'&Testlink Excel To Xml', self.toXml)
         aboutUsAction = self.createAction(u'&关于我们',self.test)
         helpmenu.addAction(aboutUsAction)
         toolMenu.addAction(toXmlAction)
              
         self.setGeometry(300, 300, 500, 350)
-        self.setWindowTitle('Test Tools')            
+        self.setWindowTitle(u'测试工具')            
         self.show()
 
     def test(self):
@@ -40,7 +40,15 @@ class MainWindow(QtGui.QMainWindow):
         dialog = toXmlUI()
         dialog.exec_()
           
+    def closeEvent(self, event):        
+        reply = QtGui.QMessageBox.question(self, 'Message',
+            u"Are you sure to quit?", QtGui.QMessageBox.Yes | 
+            QtGui.QMessageBox.No, QtGui.QMessageBox.No)
 
+        if reply == QtGui.QMessageBox.Yes:
+            event.accept()
+        else:
+            event.ignore() 
     
 
         
