@@ -1,24 +1,15 @@
 #coding=utf-8
 
 '''
-Created on 2014-7-23
+Created on 2015年7月22日
 
 @author: xun
 '''
 
-import sys
 
 from PySide import QtGui,QtCore
-from PySide.QtCore import *
-from PySide.QtGui import *
-
 import os
-
-import exportxml
-
-
-
-
+from tools import exportxml
 
 class toXmlUI(QtGui.QDialog):
     def __init__(self, parent=None):
@@ -141,71 +132,3 @@ class toXmlUI(QtGui.QDialog):
             else:
                 self.errorTipLable.setText(self.tr("The excel file is not existed."))
      
-
-                        
-
-        
-
-class Example(QtGui.QMainWindow):    
-    def __init__(self):
-        super(Example, self).__init__()        
-        self.initUI()
-        
-    def initUI(self):        
-
-        self.statusBar().showMessage('statusbar:Ready')
-        menubar = self.menuBar()
-        toolMenu = menubar.addMenu('&Tool')
-        helpmenu = menubar.addMenu('&Help')
-        toXmlAction = self.createAction('&ToXml', self.toXml)
-        aboutUsAction = self.createAction(u'&关于我们',self.test)
-        helpmenu.addAction(aboutUsAction)
-        toolMenu.addAction(toXmlAction)
-             
-        self.setGeometry(300, 300, 500, 350)
-        self.setWindowTitle('Test Tools')            
-        self.show()
-
-    def test(self):
-        self.statusBar().showMessage('You have created a new file!',9000)   
-
-
-    def toXml(self):
-        dialog = toXmlUI()
-        dialog.exec_()
-          
-
-    
-
-        
-    def createAction(self,text,slot=None,shortcut=None, icon=None,
-               tip=None,checkable=False,signal="triggered()"):
-        action = QAction(text, self)
-        if icon is not None:
-            action.setIcon(QIcon("./images/%s.png" % icon))
-        if shortcut is not None:
-            action.setShortcut(shortcut)
-        if tip is not None:
-            action.setToolTip(tip)
-            action.setStatusTip(tip)
-        if slot is not None:
-            self.connect(action, SIGNAL(signal), slot)
-        if checkable:
-            action.setCheckable(True)
-        return action
-        
-
-        
-        
-        
-
-        
-def main():
-    
-    app = QtGui.QApplication(sys.argv)
-    ex = Example()
-    ex.show()
-    sys.exit(app.exec_())
-    
-if __name__ == '__main__':
-    main()   

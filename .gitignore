@@ -1,2 +1,7 @@
 /*.project
 /*.pydevproject
+/.settings
+/tools/*.pyc
+/GUI/mainwindow/*.pyc
+/GUI/dialogs/*.pyc
+/GUI/*.pyc
