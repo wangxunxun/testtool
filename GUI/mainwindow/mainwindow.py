@@ -23,11 +23,11 @@ class MainWindow(QtGui.QMainWindow):
         menubar = self.menuBar()
         toolMenu = menubar.addMenu(u'&工具')
         helpmenu = menubar.addMenu(u'&帮助')
-        toXmlAction = self.createAction(u'&Testlink Excel To Xml', self.toXml)
+#        toXmlAction = self.createAction(u'&Testlink Excel To Xml', self.toXml)
         toXmlAction2 = self.createAction(u'&Testlink Excel To Xml2', self.toXml2)
         aboutUsAction = self.createAction(u'&关于我们',self.test)
         helpmenu.addAction(aboutUsAction)
-        toolMenu.addAction(toXmlAction)
+#        toolMenu.addAction(toXmlAction)
         toolMenu.addAction(toXmlAction2)
              
         self.setGeometry(300, 300, 500, 350)
@@ -35,7 +35,7 @@ class MainWindow(QtGui.QMainWindow):
         self.show()
 
     def test(self):
-        self.statusBar().showMessage('You have created a new file!',9000)   
+        self.statusBar().showMessage('troy test',9000)   
 
 
     def toXml(self):

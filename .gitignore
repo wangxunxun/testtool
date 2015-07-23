@@ -5,3 +5,7 @@
 /GUI/mainwindow/*.pyc
 /GUI/dialogs/*.pyc
 /GUI/*.pyc
+/dist
+/*.pyc
+/build
+
