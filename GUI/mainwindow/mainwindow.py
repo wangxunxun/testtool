@@ -10,7 +10,7 @@ import GUI.dialogs.toxml
 from PySide.QtCore import *
 from PySide.QtGui import *
 from GUI.dialogs.toxml import toXmlUI
-
+from GUI.dialogs.toxml2 import toXmlUI2
 
 class MainWindow(QtGui.QMainWindow):    
     def __init__(self):
@@ -24,9 +24,11 @@ class MainWindow(QtGui.QMainWindow):
         toolMenu = menubar.addMenu(u'&工具')
         helpmenu = menubar.addMenu(u'&帮助')
         toXmlAction = self.createAction(u'&Testlink Excel To Xml', self.toXml)
+        toXmlAction2 = self.createAction(u'&Testlink Excel To Xml2', self.toXml2)
         aboutUsAction = self.createAction(u'&关于我们',self.test)
         helpmenu.addAction(aboutUsAction)
         toolMenu.addAction(toXmlAction)
+        toolMenu.addAction(toXmlAction2)
              
         self.setGeometry(300, 300, 500, 350)
         self.setWindowTitle(u'测试工具')            
@@ -39,6 +41,11 @@ class MainWindow(QtGui.QMainWindow):
     def toXml(self):
         dialog = toXmlUI()
         dialog.exec_()
+        
+    def toXml2(self):
+        dialog = toXmlUI2()
+        dialog.exec_()
+        
           
     def closeEvent(self, event):        
         reply = QtGui.QMessageBox.question(self, 'Message',
