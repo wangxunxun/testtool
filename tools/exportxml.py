@@ -94,7 +94,6 @@ class exportxml:
             inittestsuite.appendChild(testsuite_s[i])                
             i=i+1    
         dom.appendChild(inittestsuite)
-#        print dom
         f=file(self.output+"/"+self.filename+".xml",'w')
         dom.writexml(f,'',' ','\n','utf-8')
         f.close()
@@ -124,7 +123,7 @@ class readexcel:
         while i<j:
             step ={}
             testsuite = {}
-            if self.table.cell(i,0).value and self.table.cell(i,1).value and self.table.cell(i,6).value:
+            if self.table.cell(i,0).value and self.table.cell(i,1).value and self.table.cell(i,7).value:
                 testsuite.setdefault("testsuite",unicode(self.table.cell(i,0).value))
                 self.testcases.append(unicode(self.table.cell(i,1).value))
                 self.summary.append(unicode(self.table.cell(i,2).value))
@@ -139,7 +138,7 @@ class readexcel:
                 self.testsuites.append(testsuite)
                 
                 
-            elif not self.table.cell(i,0).value and not self.table.cell(i,1).value and self.table.cell(i,6).value:
+            elif not self.table.cell(i,0).value and not self.table.cell(i,1).value and self.table.cell(i,7).value:
 
                 step.setdefault("stepid",unicode(self.table.cell(i,6).value))
                 step.setdefault("action",unicode(self.table.cell(i,7).value))
@@ -147,7 +146,7 @@ class readexcel:
                 step.setdefault("execution_type",unicode(self.table.cell(i,9).value))
                 self.steps.append(step)
                 
-            elif not self.table.cell(i,0).value and self.table.cell(i,1).value and self.table.cell(i,6).value:
+            elif not self.table.cell(i,0).value and self.table.cell(i,1).value and self.table.cell(i,7).value:
 
                 
                 self.testcases.append(unicode(self.table.cell(i,1).value))
@@ -184,15 +183,42 @@ class readexcel:
         j=1
         dis =[]
         while j<self.table.nrows:
-            if self.table.cell(j,6).value ==1.0:
+            if self.table.cell(j,1).value:
                 dis.append(j)
             j=j+1
         dis.append(self.table.nrows)
         return dis
     
+    def nocaserow(self):
+        a = self.casedis()
+        i= 0
+        count = []
+        while i<len(a):
+            j = 0
+            k =0
+            while j<a[i]:
+                if self.table.cell(j,7).value =="":
+                    k=k+1                    
+                j=j+1
+            count.append(k)
+            i=i+1
+        return count
+    
+    def realcasedis(self):
+        casedis = self.casedis()
+        nocaserow = self.nocaserow()
+        realcasedis = []
+        i = 0
+        while i<len(casedis):
+            realrow = casedis[i]-nocaserow[i]
+            realcasedis.append(realrow)
+            i=i+1
+        return realcasedis
+                    
+    
     def datastep(self):
         data = self.read()
-        a = self.casedis()
+        a = self.realcasedis()
         test =[]
         i =0
         while i<len(a)-1:
@@ -205,12 +231,12 @@ class readexcel:
         start =0
         end =0
         while k<i:
-            if self.table.cell(k,6).value ==1.0:
+            if self.table.cell(k,1).value:
                 start = start +1
             k=k+1
         l=1
         while l<j:
-            if self.table.cell(l,6).value ==1.0:
+            if self.table.cell(l,1).value:
                 end = end +1
             l=l+1
         return end - start
@@ -244,7 +270,7 @@ class readexcel:
                 cases.append(precondition)
                 cases.append(execution_type)
                 cases.append(importance)
-                cases.append(steps)                
+                cases.append(steps)             
                 allcases.append(cases)                
             else:
                 cases = []
@@ -259,7 +285,7 @@ class readexcel:
                 cases.append(precondition)
                 cases.append(execution_type)
                 cases.append(importance)
-                cases.append(steps)                
+                cases.append(steps)            
                 allcases.append(cases)                            
             i=i+1
         return allcases

@@ -159,19 +159,31 @@ class toXmlUI2(QtGui.QDialog):
         elif len(savename) ==0:
             self.errorTipLable.setText(self.trUtf8("XML文件名不能为空"))
             self.errorTipLable.show()  
-        
-        if len(execlname) != 0 and len(sheetname) !=0 and len(output) !=0 and len(savename) !=0:
+        elif len(execlname) >= 100:
+            self.errorTipLable.setText(self.trUtf8("用例文件最大长度为100"))
+            self.errorTipLable.show()
+        elif len(sheetname) >= 100:
+            self.errorTipLable.setText(self.trUtf8("表格名最大长度为100"))
+            self.errorTipLable.show()
+        elif len(output) >= 100:
+            self.errorTipLable.setText(self.trUtf8("输入文件夹最大长度为100"))
+            self.errorTipLable.show()            
+        elif len(savename) >= 100:
+            self.errorTipLable.setText(self.trUtf8("XML文件名最大长度为100"))
+            self.errorTipLable.show()            
+            
+                    
+        elif len(execlname) != 0 and len(sheetname) !=0 and len(output) !=0 and len(savename) !=0:
         
             if os.path.exists(execlname):
                 try:     
                     sheets = exportxml.exceloperate(execlname).getSheetNames()   
                 except:
                     self.errorTipLable.setText(self.trUtf8("该用例文件没有表格"))
-
                 
                 if sheetname in sheets:
                     if os.path.exists(output):
-                        aa =exportxml.changetoxml(execlname,sheetname,output,savename)
+                        aa =exportxml.changetoxml(execlname,sheetname,output,savename)                        
                         aa.run()
                         self.errorTipLable.setText(self.trUtf8("成功转换成XML文件"))
                     else:
@@ -181,8 +193,6 @@ class toXmlUI2(QtGui.QDialog):
                         self.errorTipLable.setText(self.trUtf8("成功转换成XML文件"))
                 else:
                     self.errorTipLable.setText(self.trUtf8("表格名不存在"))
-        
-
-            
+                    
             else:
                 self.errorTipLable.setText(self.trUtf8("用例文件不存在"))
