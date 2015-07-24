@@ -11,6 +11,7 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 from GUI.dialogs.toxml import toXmlUI
 from GUI.dialogs.toxml2 import toXmlUI2
+from Tkinter import Widget
 
 class MainWindow(QtGui.QMainWindow):    
     def __init__(self):
@@ -21,6 +22,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.statusBar().showMessage('statusbar:troy test')
         menubar = self.menuBar()
+
         toolMenu = menubar.addMenu(u'&工具')
         helpmenu = menubar.addMenu(u'&帮助')
 #        toXmlAction = self.createAction(u'&Testlink Excel To Xml', self.toXml)
@@ -29,10 +31,18 @@ class MainWindow(QtGui.QMainWindow):
         helpmenu.addAction(aboutUsAction)
 #        toolMenu.addAction(toXmlAction)
         toolMenu.addAction(toXmlAction2)
-             
+
+        self.testLinkButton = QtGui.QPushButton(self.trUtf8("TestLink安装"))
+#        dock = QtGui.QDockWidget("Customers", self)
+#        dock.setWidget(self.testLinkButton)
+
+        
+
+
         self.setGeometry(300, 300, 500, 350)
-        self.setWindowTitle(u'测试工具')            
-        self.show()
+        self.setWindowTitle(u'测试工具')   
+ 
+
 
     def test(self):
         self.statusBar().showMessage('troy test',9000)   

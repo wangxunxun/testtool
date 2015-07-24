@@ -16,6 +16,7 @@ from GUI.mainwindow.mainwindow import MainWindow
 def main():
     
     app = QtGui.QApplication(sys.argv)
+
     ex = MainWindow()
     ex.show()
     sys.exit(app.exec_())
