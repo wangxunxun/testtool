@@ -10,6 +10,8 @@ Created on 2015年7月22日
 from PySide import QtGui,QtCore
 import os
 from tools import exportxml
+from win32api import ShellExecute
+from win32con import SW_SHOW, SW_SHOWNOACTIVATE, SW_SHOWNORMAL
 
 
 class toXmlUI2(QtGui.QDialog):
@@ -24,9 +26,11 @@ class toXmlUI2(QtGui.QDialog):
         self.execlname = QtGui.QLabel(self)
         self.execlname.setText(self.trUtf8("用例文件"))
         self.execlnameLineEdit = QtGui.QLineEdit(self)  
-        self.execlnameLineEdit.setPlaceholderText(u"测试用例地址，格式如:D:/testcase.xls")
+        self.execlnameLineEdit.setPlaceholderText(u"D:/testcase.xls")
         
         self.chooseExcelButton = QtGui.QPushButton(self.trUtf8("选择"))
+        self.caseModelButton = QtGui.QPushButton(self.trUtf8("用例模板"))
+
 
 
         
@@ -39,14 +43,14 @@ class toXmlUI2(QtGui.QDialog):
         self.output = QtGui.QLabel(self)
         self.output.setText(self.trUtf8("输出文件夹"))
         self.outputLineEdit = QtGui.QLineEdit(self) 
-        self.outputLineEdit.setPlaceholderText(u"输出文件夹，格式如:D:/testcasefolder")
+        self.outputLineEdit.setPlaceholderText(u"D:/testcasefolder")
         self.chooseOutPutButton=  QtGui.QPushButton(self.trUtf8("选择"))
         
       
         self.savename = QtGui.QLabel(self)
         self.savename.setText(self.trUtf8("XML文件名"))
         self.savenameLineEdit = QtGui.QLineEdit(self)  
-        self.savenameLineEdit.setPlaceholderText(u"生成的XML文件名，格式如：testcase") 
+        self.savenameLineEdit.setPlaceholderText(u"testcase") 
         
 
         self.okButton = QtGui.QPushButton(self.trUtf8("确定"))
@@ -70,6 +74,7 @@ class toXmlUI2(QtGui.QDialog):
         mainlayout.addWidget(self.execlname, 0, 0)
         mainlayout.addWidget(self.execlnameLineEdit, 0, 1)
         mainlayout.addWidget(self.chooseExcelButton, 0, 2)
+        mainlayout.addWidget(self.caseModelButton,0,3)
         mainlayout.addWidget(self.sheetname, 1, 0)
 #        mainlayout.addWidget(self.sheetnameLineEdit, 1, 1)
         mainlayout.addWidget(self.chooseSheet,1,1)
@@ -99,10 +104,16 @@ class toXmlUI2(QtGui.QDialog):
 
         self.chooseExcelButton.clicked.connect(self.chooseFile)
         self.chooseOutPutButton.clicked.connect(self.chooseFolder)
+        self.caseModelButton.clicked.connect(self.openexcel)
         
       
 
+    def openexcel(self):
+        ShellExecute(0,"open","Model\TestCase.xls","","",SW_SHOWNOACTIVATE)
 
+        
+
+        
     def test(self):
         print 111
         
@@ -183,14 +194,27 @@ class toXmlUI2(QtGui.QDialog):
                 
                 if sheetname in sheets:
                     if os.path.exists(output):
-                        aa =exportxml.changetoxml(execlname,sheetname,output,savename)                        
-                        aa.run()
-                        self.errorTipLable.setText(self.trUtf8("成功转换成XML文件"))
+                        
+                        xmlfile = output.replace('/',"\\")+"\\"+savename+".xml"
+                        aa =exportxml.changetoxml(execlname,sheetname,output,savename)  
+                        try:                      
+                            aa.run()
+                            ShellExecute(0,"open",xmlfile,"","",SW_SHOWNOACTIVATE)
+                            self.errorTipLable.setText(self.trUtf8("成功转换成XML文件"))
+                        except:
+                            self.errorTipLable.setText(self.trUtf8("请参照用例模板设计用例"))
+                        
                     else:
                         os.mkdir(output)
+                        xmlfile = output.replace('/',"\\")+"\\"+savename+".xml"
+                        print xmlfile
                         aa =exportxml.changetoxml(execlname,sheetname,output,savename)
-                        aa.run()
-                        self.errorTipLable.setText(self.trUtf8("成功转换成XML文件"))
+                        try:                      
+                            aa.run()
+                            ShellExecute(0,"open",xmlfile,"","",SW_SHOWNOACTIVATE)
+                            self.errorTipLable.setText(self.trUtf8("成功转换成XML文件"))
+                        except:
+                            self.errorTipLable.setText(self.trUtf8("请参照用例模板设计用例"))
                 else:
                     self.errorTipLable.setText(self.trUtf8("表格名不存在"))
                     
