@@ -24,13 +24,13 @@ setup (
        
        
        windows = [{
-                        'script': 'RUN.py'
+                        'script': 'Testtool.py'
                   }],
        data_files=[("Model",
                    ["Model/TestCase.xls"])]
       )
 '''
-setup(console=["RUN.py"],
+setup(console=["Testtool.py"],
       data_files=[("Model",
                    ["Model/TestCase.xls"])]
 )
