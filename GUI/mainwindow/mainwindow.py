@@ -6,10 +6,10 @@ Created on 2015年7月22日
 '''
 
 from PySide import QtGui,QtCore
-import GUI.dialogs.toxml
+import GUI.dialogs.toxmlnostep
 from PySide.QtCore import *
 from PySide.QtGui import *
-from GUI.dialogs.toxml import toXmlUI
+from GUI.dialogs.toxmlnostep import toXmlUI
 from GUI.dialogs.toxml2 import toXmlUI2
 from Tkinter import Widget
 
@@ -25,14 +25,14 @@ class MainWindow(QtGui.QMainWindow):
 
         toolMenu = menubar.addMenu(u'&工具')
         helpmenu = menubar.addMenu(u'&帮助')
-#        toXmlAction = self.createAction(u'&Testlink Excel To Xml', self.toXml)
+        toXmlAction = self.createAction(u'&Testlink Excel To Xml Without Step', self.toXml)
         toXmlAction2 = self.createAction(u'&Testlink Excel To Xml', self.toXml2)
         aboutUsAction = self.createAction(u'&关于我们',self.test)
         helpmenu.addAction(aboutUsAction)
-#        toolMenu.addAction(toXmlAction)
+        toolMenu.addAction(toXmlAction)
         toolMenu.addAction(toXmlAction2)
 
-        self.testLinkButton = QtGui.QPushButton(self.trUtf8("TestLink安装"))
+#        self.testLinkButton = QtGui.QPushButton(self.trUtf8("TestLink安装"))
 #        dock = QtGui.QDockWidget("Customers", self)
 #        dock.setWidget(self.testLinkButton)
 

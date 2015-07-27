@@ -9,14 +9,15 @@ Created on 2015年7月22日
 
 from PySide import QtGui,QtCore
 import os
+from tools import ExportXmlNoStep
 from tools import exportxml
 from win32api import ShellExecute
 from win32con import SW_SHOW, SW_SHOWNOACTIVATE, SW_SHOWNORMAL
 
 
-class toXmlUI2(QtGui.QDialog):
+class toXmlUI(QtGui.QDialog):
     def __init__(self, parent=None):
-        super(toXmlUI2, self).__init__(parent)
+        super(toXmlUI, self).__init__(parent)
 
         self.setWindowTitle(self.trUtf8("Excel to XML"))
         self.setWindowFlags(QtCore.Qt.WindowSystemMenuHint)
@@ -109,7 +110,7 @@ class toXmlUI2(QtGui.QDialog):
       
 
     def openexcel(self):
-        ShellExecute(0,"open","Model\Test Case.xls","","",SW_SHOW)
+        ShellExecute(0,"open","Model\Test Case Without Step.xls","","",SW_SHOW)
 
         
 
@@ -141,7 +142,7 @@ class toXmlUI2(QtGui.QDialog):
                 
 
             self.execlnameLineEdit.setText(self.file[0])
-            sheets = exportxml.exceloperate(self.file[0]).getSheetNames()
+            sheets = ExportXmlNoStep.exceloperate(self.file[0]).getSheetNames()
             i =0
             while i<len(sheets):
                 self.chooseSheet.addItem(sheets[i])
@@ -188,7 +189,7 @@ class toXmlUI2(QtGui.QDialog):
         
             if os.path.exists(execlname):
                 try:     
-                    sheets = exportxml.exceloperate(execlname).getSheetNames()   
+                    sheets = ExportXmlNoStep.exceloperate(execlname).getSheetNames()   
                 except:
                     self.errorTipLable.setText(self.trUtf8("该用例文件没有表格"))
                 
@@ -196,7 +197,7 @@ class toXmlUI2(QtGui.QDialog):
                     if os.path.exists(output):
                         
                         xmlfile = output.replace('/',"\\")+"\\"+savename+".xml"
-                        aa =exportxml.changetoxml(execlname,sheetname,output,savename)  
+                        aa =ExportXmlNoStep.changetoxml(execlname,sheetname,output,savename)  
                         try:                      
                             aa.run()
                             ShellExecute(0,"open",xmlfile,"","",SW_SHOWNOACTIVATE)
@@ -208,7 +209,7 @@ class toXmlUI2(QtGui.QDialog):
                         os.mkdir(output)
                         xmlfile = output.replace('/',"\\")+"\\"+savename+".xml"
                         print xmlfile
-                        aa =exportxml.changetoxml(execlname,sheetname,output,savename)
+                        aa =ExportXmlNoStep.changetoxml(execlname,sheetname,output,savename)
                         try:                      
                             aa.run()
                             ShellExecute(0,"open",xmlfile,"","",SW_SHOWNOACTIVATE)

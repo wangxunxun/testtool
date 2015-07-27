@@ -27,7 +27,7 @@ setup (
                         'script': 'Testtool.py'
                   }],
        data_files=[("Model",
-                   ["Model/TestCase.xls"])]
+                   ["Model/Test Case.xls","Model/Test Case Without Step.xls"])]
       )
 '''
 setup(console=["Testtool.py"],
