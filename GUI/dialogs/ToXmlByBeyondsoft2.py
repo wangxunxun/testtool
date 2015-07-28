@@ -10,15 +10,15 @@ Created on 2015年7月22日
 from PySide import QtGui,QtCore
 import os
 from tools import ExportXmlNoStep
-from tools import ExportXmlByBeyondsoft
+from tools import ExportXmlByBeyondsoft2
 from tools import exportxml
 from win32api import ShellExecute
 from win32con import SW_SHOW, SW_SHOWNOACTIVATE, SW_SHOWNORMAL
 
 
-class toXmlUIByBeyondsoft(QtGui.QDialog):
+class toXmlUIByBeyondsoft2(QtGui.QDialog):
     def __init__(self, parent=None):
-        super(toXmlUIByBeyondsoft, self).__init__(parent)
+        super(toXmlUIByBeyondsoft2, self).__init__(parent)
 
         self.setWindowTitle(self.trUtf8("Excel to XML"))
         self.setWindowFlags(QtCore.Qt.WindowSystemMenuHint)
@@ -111,7 +111,7 @@ class toXmlUIByBeyondsoft(QtGui.QDialog):
       
 
     def openexcel(self):
-        ShellExecute(0,"open",u"Model\全国中小企业股转系统官网前台_Test Case_v1.3.xls","","",SW_SHOW)
+        ShellExecute(0,"open",u"Model\QQ音乐_Android V3.6.1.9_Normal Test Result_Beta.xls","","",SW_SHOW)
 
         
 
@@ -143,7 +143,7 @@ class toXmlUIByBeyondsoft(QtGui.QDialog):
                 
 
             self.execlnameLineEdit.setText(self.file[0])
-            sheets = ExportXmlByBeyondsoft.exceloperate(self.file[0]).getSheetNames()
+            sheets = ExportXmlByBeyondsoft2.exceloperate(self.file[0]).getSheetNames()
             i =0
             while i<len(sheets):
                 self.chooseSheet.addItem(sheets[i])
@@ -190,7 +190,7 @@ class toXmlUIByBeyondsoft(QtGui.QDialog):
         
             if os.path.exists(execlname):
                 try:     
-                    sheets = ExportXmlByBeyondsoft.exceloperate(execlname).getSheetNames()   
+                    sheets = ExportXmlByBeyondsoft2.exceloperate(execlname).getSheetNames()   
                 except:
                     self.errorTipLable.setText(self.trUtf8("该用例文件没有表格"))
                 
@@ -198,7 +198,7 @@ class toXmlUIByBeyondsoft(QtGui.QDialog):
                     if os.path.exists(output):
                         
                         xmlfile = output.replace('/',"\\")+"\\"+savename+".xml"
-                        aa =ExportXmlByBeyondsoft.changetoxml(execlname,sheetname,output,savename)  
+                        aa =ExportXmlByBeyondsoft2.changetoxml(execlname,sheetname,output,savename)  
                         try:                      
                             aa.run()
                             ShellExecute(0,"open",xmlfile,"","",SW_SHOWNOACTIVATE)
@@ -209,7 +209,7 @@ class toXmlUIByBeyondsoft(QtGui.QDialog):
                     else:
                         os.mkdir(output)
                         xmlfile = output.replace('/',"\\")+"\\"+savename+".xml"
-                        aa =ExportXmlByBeyondsoft.changetoxml(execlname,sheetname,output,savename)
+                        aa =ExportXmlByBeyondsoft2.changetoxml(execlname,sheetname,output,savename)
                         try:                      
                             aa.run()
                             ShellExecute(0,"open",xmlfile,"","",SW_SHOWNOACTIVATE)

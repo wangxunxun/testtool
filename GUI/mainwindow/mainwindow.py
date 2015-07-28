@@ -13,6 +13,7 @@ from GUI.dialogs.toxmlnostep import toXmlUI
 from GUI.dialogs.toxml2 import toXmlUI2
 from Tkinter import Widget
 from GUI.dialogs.ToXmlByBeyondsoft import toXmlUIByBeyondsoft
+from GUI.dialogs.ToXmlByBeyondsoft2 import toXmlUIByBeyondsoft2
 
 class MainWindow(QtGui.QMainWindow):    
     def __init__(self):
@@ -29,11 +30,14 @@ class MainWindow(QtGui.QMainWindow):
         toXmlAction = self.createAction(u'&Testlink Excel To Xml Without Step', self.toXml)
         toXmlAction2 = self.createAction(u'&Testlink Excel To Xml', self.toXml2)
         toXmlAction3 = self.createAction(u'&Testlink Excel To Xml by beyondsoft', self.toXml3)
+        toXmlAction4 = self.createAction(u'&Testlink Excel To Xml by beyondsoft2', self.toXml4)        
+        
         aboutUsAction = self.createAction(u'&关于我们',self.test)
         helpmenu.addAction(aboutUsAction)
         toolMenu.addAction(toXmlAction)
         toolMenu.addAction(toXmlAction2)
         toolMenu.addAction(toXmlAction3)
+        toolMenu.addAction(toXmlAction4)
 
 #        self.testLinkButton = QtGui.QPushButton(self.trUtf8("TestLink安装"))
 #        dock = QtGui.QDockWidget("Customers", self)
@@ -61,6 +65,10 @@ class MainWindow(QtGui.QMainWindow):
         
     def toXml3(self):
         dialog = toXmlUIByBeyondsoft()
+        dialog.exec_()
+        
+    def toXml4(self):
+        dialog = toXmlUIByBeyondsoft2()
         dialog.exec_()
         
           

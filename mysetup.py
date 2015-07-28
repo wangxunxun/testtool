@@ -9,13 +9,7 @@ import sys
 from cx_Freeze import setup, Executable  
 from distutils.core import setup  
 import py2exe  
-''' 
-options ={ 'py2exe':
-                {
-                    'dll_excludes':['w9xpopen.exe'] #This file is for win9x platform
-                }
-        }
-'''
+
 # Setup
 setup ( 
        name = "Test TOOL",
@@ -27,11 +21,6 @@ setup (
                         'script': 'Testtool.py'
                   }],
        data_files=[("Model",
-                   ["Model/Test Case.xls","Model/Test Case Without Step.xls",u"Model/全国中小企业股转系统官网前台_Test Case_v1.3.xls"])]
+                   ["Model/Test Case.xls","Model/Test Case Without Step.xls",u"Model/全国中小企业股转系统官网前台_Test Case_v1.3.xls",
+                    u"Model/QQ音乐_Android V3.6.1.9_Normal Test Result_Beta.xls"])]
       )
-'''
-setup(console=["Testtool.py"],
-      data_files=[("Model",
-                   ["Model/TestCase.xls"])]
-)
-'''
