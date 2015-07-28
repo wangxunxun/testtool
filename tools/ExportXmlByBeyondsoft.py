@@ -168,7 +168,7 @@ class readexcel:
         while i <len(self.steps):
             t = steps[i]
             r = output[i]
-            site = "<span style='font-weight:bold;font-size:18px;color:#ee82ee;'>"+"Test Site:"+"</span>"+"<br>"
+            site = "<span style='font-weight:bold;font-size:18px;color:#ee82ee;'>"+"Steps (Input)"+"</span>"+"<br>"
             re = "<span style='font-weight:bold;font-size:18px;color:#ee82ee;'>"+"Expected Output:"+"</span>"+"<br>"
             summary.append(site+t +"<br>"*3+ re +r)
             i=  i+1
@@ -238,11 +238,13 @@ class readexcel:
     def data_case(self):
         data = self.read()
         a = self.realsuitedis()
+
         test =[]
         i =0
         while i<len(a)-1:
             test.append(data[2][a[i]-1:a[i+1]-1])
             i=i+1
+
         return test
     
     def suitecount(self,i,j):
@@ -270,29 +272,34 @@ class readexcel:
             i=i+1
         return test
     
+    def realCountSuite(self,data):
+        i =0
+        new =[0]
+        while i<len(data):
+            j =0 
+            c = 0
+            while j<=i:
+                c = c+data[j]            
+                j=j+1
+            new.append(c)
+            i = i+1
+        return new
+    
     def data_suite(self):
         data = self.read()
-        a =self.count_suite()
+        a = self.realCountSuite(self.count_suite())
 
-        i=0
+        i=1
         allsuite=[]        
         while i<len(a):
-            if i==0:
-                suites = []
-                suite = data[1][i:a[i]]
-                case = self.data_case()[i:a[i]]
-                suites.append(suite)
-                suites.append(case)
-     
-                allsuite.append(suites)                
-            else:
-                suites = []
-                suite = data[1][a[i-1]:a[i-1]+a[i]]
-                case = self.data_case()[a[i-1]:a[i-1]+a[i]]
-                suites.append(suite)
-                suites.append(case)
-     
-                allsuite.append(suites)                             
+
+            suites = []
+            suite = data[1][a[i-1]:a[i]]
+            case = self.data_case()[a[i-1]:a[i]]
+            suites.append(suite)
+            suites.append(case)
+ 
+            allsuite.append(suites)                             
             i=i+1
         return allsuite
     

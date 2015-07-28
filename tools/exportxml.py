@@ -250,42 +250,41 @@ class readexcel:
             i=i+1
         return test
     
+    def realdatacase(self,data):
+        i =0
+        new =[0]
+        while i<len(data):
+            j =0 
+            c = 0
+            while j<=i:
+                c = c+data[j]            
+                j=j+1
+            new.append(c)
+            i = i+1
+        return new
+    
+    
     def case(self):
         data = self.read()
-        a =self.datacase()
-        i=0
+        a =self.realdatacase(self.datacase())
+        i=1
         allcases=[]        
         while i<len(a):
-            if i==0:
-                cases = []
-                case = data[1][i:a[i]]
-                summary = data[2][i:a[i]]
-                precondition = data[3][i:a[i]]
-                execution_type = data[4][i:a[i]]
-                importance = data[5][i:a[i]]
-                steps = self.datastep()[i:a[i]]
-                cases.append(case)
-                cases.append(summary)
-                cases.append(precondition)
-                cases.append(execution_type)
-                cases.append(importance)
-                cases.append(steps)             
-                allcases.append(cases)                
-            else:
-                cases = []
-                case = data[1][a[i-1]:a[i-1]+a[i]]
-                summary = data[2][a[i-1]:a[i-1]+a[i]]
-                precondition = data[3][a[i-1]:a[i-1]+a[i]]
-                execution_type = data[4][a[i-1]:a[i-1]+a[i]]
-                importance = data[5][a[i-1]:a[i-1]+a[i]]
-                steps = self.datastep()[a[i-1]:a[i-1]+a[i]]                                
-                cases.append(case)
-                cases.append(summary)
-                cases.append(precondition)
-                cases.append(execution_type)
-                cases.append(importance)
-                cases.append(steps)            
-                allcases.append(cases)                            
+
+            cases = []
+            case = data[1][a[i-1]:a[i]]
+            summary = data[2][a[i-1]:a[i]]
+            precondition = data[3][a[i-1]:a[i]]
+            execution_type = data[4][a[i-1]:a[i]]
+            importance = data[5][a[i-1]:a[i]]
+            steps = self.datastep()[a[i-1]:a[i]]                                
+            cases.append(case)
+            cases.append(summary)
+            cases.append(precondition)
+            cases.append(execution_type)
+            cases.append(importance)
+            cases.append(steps)            
+            allcases.append(cases)                            
             i=i+1
         return allcases
     
