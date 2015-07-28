@@ -116,8 +116,6 @@ class toXmlUIByBeyondsoft(QtGui.QDialog):
         
 
         
-    def test(self):
-        print 111
         
     def chooseFolder(self):
         self.dir =QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8("选择文件夹"))

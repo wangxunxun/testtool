@@ -9,3 +9,7 @@
 /*.pyc
 /build
 
+/GUI/dialogs/__pycache__/*.pyc
+/tools/__pycache__/*.pyc
+/GUI/__pycache__/*.pyc
+/GUI/mainwindow/__pycache__/*.pyc

@@ -115,8 +115,7 @@ class toXmlUI(QtGui.QDialog):
         
 
         
-    def test(self):
-        print 111
+
         
     def chooseFolder(self):
         self.dir =QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8("选择文件夹"))
@@ -208,7 +207,6 @@ class toXmlUI(QtGui.QDialog):
                     else:
                         os.mkdir(output)
                         xmlfile = output.replace('/',"\\")+"\\"+savename+".xml"
-                        print xmlfile
                         aa =ExportXmlNoStep.changetoxml(execlname,sheetname,output,savename)
                         try:                      
                             aa.run()

@@ -11,7 +11,6 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 from GUI.dialogs.toxmlnostep import toXmlUI
 from GUI.dialogs.toxml2 import toXmlUI2
-from Tkinter import Widget
 from GUI.dialogs.ToXmlByBeyondsoft import toXmlUIByBeyondsoft
 from GUI.dialogs.ToXmlByBeyondsoft2 import toXmlUIByBeyondsoft2
 
