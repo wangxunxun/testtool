@@ -123,7 +123,8 @@ class readexcel:
                 self.testsite.append(unicode(self.table.cell(i,6).value))
                 self.result.append(unicode(self.table.cell(i,7).value))
             i=i+1
-
+        self.testsite = self.newline(self.testsite)
+        self.result = self.newline(self.result)
         self.summary = self.getSummary(self.testsite, self.result)
 
         self.testdata.append(self.testsuites)
@@ -135,7 +136,15 @@ class readexcel:
 
 
         return self.testdata
-            
+
+    def newline(self,data):
+        i = 0
+        newdata = []
+        while i<len(data):
+            c = data[i].replace("\n","<br>")
+            newdata.append(c)
+            i = i+1
+        return newdata            
             
     def getSummary(self,testsite,result):
         i = 0

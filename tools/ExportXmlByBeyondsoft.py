@@ -140,8 +140,10 @@ class readexcel:
                 self.output.append(unicode(self.table.cell(i,7).value)) 
                 self.importance.append(unicode(self.table.cell(i,8).value))   
             i=i+1
-            
+        self.steps = self.newline(self.steps)
+        self.output = self.newline(self.output)
         self.summary = self.getSummary(self.steps, self.output)
+
         self.cases = self.getdiccase(self.name, self.summary, self.preconditions, self.importance)
         self.testdata.append(self.bigsuites)
         self.testdata.append(self.suites)
@@ -149,6 +151,16 @@ class readexcel:
 
 
         return self.testdata 
+    
+    
+    def newline(self,data):
+        i = 0
+        newdata = []
+        while i<len(data):
+            c = data[i].replace("\n","<br>")
+            newdata.append(c)
+            i = i+1
+        return newdata
     
     def getSummary(self,steps,output):
         i = 0
@@ -334,20 +346,9 @@ if __name__ == "__main__":
 
     
     b = readexcel("D:/test.xls","Sheet1")
-    print b.read()
-    print b.bigsuitedis()
-    print b.suitedis()
-    print b.nocaserow()
-    print b.realsuitedis()
-    print len(b.read())
-    print b.data_case()
-    print len(b.data_case())
-    print b.count_suite()
-    print b.data_suite()[0]
-    print b.getbigsuite()
-    print len(b.getbigsuite())
     
-    c = changetoxml(u"D:/一Test Case_v1.3.xls",u"最新动态","D:/","222")
+    
+    c = changetoxml(u"D:/test.xls",u"Sheet1","D:/","222")
     c.run()
     
 #    a =exportxml("yonghuguanlizhongxin",b.getbigsuite(),"D:/","222")
