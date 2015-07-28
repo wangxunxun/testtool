@@ -12,6 +12,7 @@ from PySide.QtGui import *
 from GUI.dialogs.toxmlnostep import toXmlUI
 from GUI.dialogs.toxml2 import toXmlUI2
 from Tkinter import Widget
+from GUI.dialogs.ToXmlByBeyondsoft import toXmlUIByBeyondsoft
 
 class MainWindow(QtGui.QMainWindow):    
     def __init__(self):
@@ -27,10 +28,12 @@ class MainWindow(QtGui.QMainWindow):
         helpmenu = menubar.addMenu(u'&帮助')
         toXmlAction = self.createAction(u'&Testlink Excel To Xml Without Step', self.toXml)
         toXmlAction2 = self.createAction(u'&Testlink Excel To Xml', self.toXml2)
+        toXmlAction3 = self.createAction(u'&Testlink Excel To Xml by beyondsoft', self.toXml3)
         aboutUsAction = self.createAction(u'&关于我们',self.test)
         helpmenu.addAction(aboutUsAction)
         toolMenu.addAction(toXmlAction)
         toolMenu.addAction(toXmlAction2)
+        toolMenu.addAction(toXmlAction3)
 
 #        self.testLinkButton = QtGui.QPushButton(self.trUtf8("TestLink安装"))
 #        dock = QtGui.QDockWidget("Customers", self)
@@ -54,6 +57,10 @@ class MainWindow(QtGui.QMainWindow):
         
     def toXml2(self):
         dialog = toXmlUI2()
+        dialog.exec_()
+        
+    def toXml3(self):
+        dialog = toXmlUIByBeyondsoft()
         dialog.exec_()
         
           

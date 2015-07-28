@@ -27,7 +27,7 @@ setup (
                         'script': 'Testtool.py'
                   }],
        data_files=[("Model",
-                   ["Model/Test Case.xls","Model/Test Case Without Step.xls"])]
+                   ["Model/Test Case.xls","Model/Test Case Without Step.xls",u"Model/全国中小企业股转系统官网前台_Test Case_v1.3.xls"])]
       )
 '''
 setup(console=["Testtool.py"],
