@@ -7,6 +7,7 @@ Created on 2015年7月28日
 from xml.dom import minidom
 import xlrd
 import os
+from idlelib.IOBinding import encoding
 
 
 
@@ -15,7 +16,7 @@ class exportxml:
         self.testdata = testdata
         self.output = outputfolder
         self.filename = filename
-        self.sheetname = sheetname.encode('utf-8')
+        self.sheetname = sheetname
         
     def export(self):
 
@@ -31,13 +32,13 @@ class exportxml:
         while i<len(self.testdata):                        
             bigsuite =  dom.createElement("testsuite")                    
             bigsuite_s.append(bigsuite)    
-            bigsuite_s[i].setAttribute("name", self.testdata[i].get("bigsuite").encode('utf-8'))     
+            bigsuite_s[i].setAttribute("name", str(self.testdata[i].get("bigsuite")))     
             suite_s = []             
             j=0
             while j<len(self.testdata[i].get("suite")):        
                 suite = dom.createElement("testsuite")
                 suite_s.append(suite)
-                suite_s[j].setAttribute("name", self.testdata[i].get("suite")[j].encode('utf-8'))                                                 
+                suite_s[j].setAttribute("name", str(self.testdata[i].get("suite")[j]))                                                 
                 testcase_s=[]
                 summary_s =[]
                 preconditions_s =[]
@@ -57,11 +58,11 @@ class exportxml:
                     importance = dom.createElement("importance")
                     importance_s.append(importance)
                                       
-                    summary_text = dom.createTextNode(self.testdata[i].get("cases")[j][k].get("summary").encode('utf-8'))               
-                    preconditions_text = dom.createTextNode(self.testdata[i].get("cases")[j][k].get("preconditions").encode('utf-8'))
-                    importance_text = dom.createTextNode(self.testdata[i].get("cases")[j][k].get("importance").encode('utf-8'))            
+                    summary_text = dom.createTextNode(str(self.testdata[i].get("cases")[j][k].get("summary")))               
+                    preconditions_text = dom.createTextNode(str(self.testdata[i].get("cases")[j][k].get("preconditions")))
+                    importance_text = dom.createTextNode(str(self.testdata[i].get("cases")[j][k].get("importance")))            
                     
-                    testcase_s[k].setAttribute("name", self.testdata[i].get("cases")[j][k].get("name").encode('utf-8'))                                                         
+                    testcase_s[k].setAttribute("name", str(self.testdata[i].get("cases")[j][k].get("name")))                                                         
                     summary_s[k].appendChild(summary_text)                
                     preconditions_s[k].appendChild(preconditions_text)                
                     importance_s[k].appendChild(importance_text)
@@ -81,7 +82,7 @@ class exportxml:
             sheetsuite.appendChild(bigsuite_s[i])
             i=i+1    
         dom.appendChild(inittestsuite)
-        f=file(self.output+"/"+self.filename+".xml",'w')
+        f=open(self.output+"/"+self.filename+".xml",'w',encoding = "utf-8")
         dom.writexml(f,'',' ','\n','utf-8')
         f.close()
  
@@ -112,33 +113,33 @@ class readexcel:
         while i<j:
             if self.table.cell(i,0).value and self.table.cell(i,1).value and self.table.cell(i,3).value:
 
-                self.bigsuites.append(unicode(self.table.cell(i,0).value))
-                self.suites.append(unicode(self.table.cell(i,1).value))
-                self.name.append(unicode(self.table.cell(i,3).value))
-                self.preconditions.append(unicode(self.table.cell(i,5).value))
-                self.steps.append(unicode(self.table.cell(i,6).value))
-                self.output.append(unicode(self.table.cell(i,7).value)) 
-                self.importance.append(unicode(self.table.cell(i,8).value))               
+                self.bigsuites.append(self.table.cell(i,0).value)
+                self.suites.append(self.table.cell(i,1).value)
+                self.name.append(self.table.cell(i,3).value)
+                self.preconditions.append(self.table.cell(i,5).value)
+                self.steps.append(self.table.cell(i,6).value)
+                self.output.append(self.table.cell(i,7).value) 
+                self.importance.append(self.table.cell(i,8).value)               
                 
 
                                 
             elif not self.table.cell(i,0).value and not self.table.cell(i,1).value and self.table.cell(i,3).value:
 
-                self.name.append(unicode(self.table.cell(i,3).value))
-                self.preconditions.append(unicode(self.table.cell(i,5).value))
-                self.steps.append(unicode(self.table.cell(i,6).value))
-                self.output.append(unicode(self.table.cell(i,7).value)) 
-                self.importance.append(unicode(self.table.cell(i,8).value))    
+                self.name.append(self.table.cell(i,3).value)
+                self.preconditions.append(self.table.cell(i,5).value)
+                self.steps.append(self.table.cell(i,6).value)
+                self.output.append(self.table.cell(i,7).value) 
+                self.importance.append(self.table.cell(i,8).value)   
                 
             elif not self.table.cell(i,0).value and self.table.cell(i,1).value and self.table.cell(i,3).value:
 
                 
-                self.suites.append(unicode(self.table.cell(i,1).value))
-                self.name.append(unicode(self.table.cell(i,3).value))
-                self.preconditions.append(unicode(self.table.cell(i,5).value))
-                self.steps.append(unicode(self.table.cell(i,6).value))
-                self.output.append(unicode(self.table.cell(i,7).value)) 
-                self.importance.append(unicode(self.table.cell(i,8).value))   
+                self.suites.append(self.table.cell(i,1).value)
+                self.name.append(self.table.cell(i,3).value)
+                self.preconditions.append(self.table.cell(i,5).value)
+                self.steps.append(self.table.cell(i,6).value)
+                self.output.append(self.table.cell(i,7).value)
+                self.importance.append(self.table.cell(i,8).value)  
             i=i+1
         self.steps = self.newline(self.steps)
         self.output = self.newline(self.output)

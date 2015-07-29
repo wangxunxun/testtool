@@ -22,7 +22,7 @@ class ExportXmlNoStep:
             inittestsuite.setAttribute("name", "")   
             testsuite_s.append(testsuite)
             testsuite_s[i] =  dom.createElement("testsuite")       
-            testsuite_s[i].setAttribute("name", self.testdata[i].get("testsuite").encode('utf-8'))   
+            testsuite_s[i].setAttribute("name", self.testdata[i].get("testsuite"))   
             testcase_s=[]
             summary_s =[]
             preconditions_s =[]
@@ -42,11 +42,11 @@ class ExportXmlNoStep:
                 importance = dom.createElement("importance")
                 importance_s.append(importance)
                                         
-                testcase_s[j].setAttribute("name", self.testdata[i].get("testcases")[j].encode('utf-8'))                                                                                    
-                summary_text = dom.createTextNode(self.testdata[i].get("summary")[j].encode('utf-8'))
-                precondition_text = dom.createTextNode(self.testdata[i].get("precondition")[j].encode('utf-8'))
-                execution_type_text = dom.createTextNode(self.testdata[i].get("execution_type")[j].encode('utf-8'))
-                importance_text = dom.createTextNode(self.testdata[i].get("importance")[j].encode('utf-8'))            
+                testcase_s[j].setAttribute("name", self.testdata[i].get("testcases")[j])                                                                                    
+                summary_text = dom.createTextNode(self.testdata[i].get("summary")[j])
+                precondition_text = dom.createTextNode(self.testdata[i].get("precondition")[j])
+                execution_type_text = dom.createTextNode(str(self.testdata[i].get("execution_type")[j]))
+                importance_text = dom.createTextNode(str(self.testdata[i].get("importance")[j]))            
                 summary_s[j].appendChild(summary_text)                
                 preconditions_s[j].appendChild(precondition_text)                
                 execution_type_s[j].appendChild(execution_type_text)                
@@ -65,7 +65,7 @@ class ExportXmlNoStep:
             inittestsuite.appendChild(testsuite_s[i])                
             i=i+1    
         dom.appendChild(inittestsuite)
-        f=file(self.output+"/"+self.filename+".xml",'w')
+        f=open(self.output+"/"+self.filename+".xml",'w',encoding = "utf-8")
         dom.writexml(f,'',' ','\n','utf-8')
         f.close()
 
@@ -97,14 +97,14 @@ class readexcel:
             step ={}
             testsuite = {}
             if self.table.cell(i,0).value and self.table.cell(i,2).value:
-                testsuite.setdefault("testsuite",unicode(self.table.cell(i,0).value))
-                self.testcases.append(unicode(self.table.cell(i,2).value))
+                testsuite.setdefault("testsuite",self.table.cell(i,0).value)
+                self.testcases.append(self.table.cell(i,2).value)
 
-                self.preconditon.append(unicode(self.table.cell(i,3).value))
-                self.casetype.append(unicode(self.table.cell(i,4).value))
-                self.importance.append(unicode(self.table.cell(i,5).value))
-                self.testsite.append(unicode(self.table.cell(i,6).value))
-                self.result.append(unicode(self.table.cell(i,7).value))
+                self.preconditon.append(self.table.cell(i,3).value)
+                self.casetype.append(self.table.cell(i,4).value)
+                self.importance.append(self.table.cell(i,5).value)
+                self.testsite.append(self.table.cell(i,6).value)
+                self.result.append(self.table.cell(i,7).value)
                 
       
 
@@ -115,13 +115,13 @@ class readexcel:
             elif not self.table.cell(i,0).value and self.table.cell(i,2).value:
 
                 
-                self.testcases.append(unicode(self.table.cell(i,2).value))
+                self.testcases.append(self.table.cell(i,2).value)
 
-                self.preconditon.append(unicode(self.table.cell(i,3).value))
-                self.casetype.append(unicode(self.table.cell(i,4).value))
-                self.importance.append(unicode(self.table.cell(i,5).value))
-                self.testsite.append(unicode(self.table.cell(i,6).value))
-                self.result.append(unicode(self.table.cell(i,7).value))
+                self.preconditon.append(self.table.cell(i,3).value)
+                self.casetype.append(self.table.cell(i,4).value)
+                self.importance.append(self.table.cell(i,5).value)
+                self.testsite.append(self.table.cell(i,6).value)
+                self.result.append(self.table.cell(i,7).value)
             i=i+1
         self.testsite = self.newline(self.testsite)
         self.result = self.newline(self.result)
@@ -292,10 +292,10 @@ class exceloperate:
 if __name__ == "__main__":
     
 
-    testexcel = raw_input("Please input the path of your excel file(like 'D:/testexcel.xls'):\n")
-    sheetname = raw_input("Please input your sheetname of testcase(like 'Sheet1'):\n")
-    output = raw_input("Please input your output folder (like 'D:/testcase') :\n")
-    filename = raw_input("Please input your filename (like 'testcase'):\n")
+    testexcel = input("Please input the path of your excel file(like 'D:/testexcel.xls'):\n")
+    sheetname = input("Please input your sheetname of testcase(like 'Sheet1'):\n")
+    output = input("Please input your output folder (like 'D:/testcase') :\n")
+    filename = input("Please input your filename (like 'testcase'):\n")
     
     if os.path.exists(testexcel):     
         sheets = exceloperate(testexcel).getSheetNames()   

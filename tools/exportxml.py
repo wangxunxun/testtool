@@ -2,6 +2,7 @@
 from xml.dom import minidom
 import xlrd
 import os
+from idlelib.IOBinding import encoding
 
     
 class exportxml:
@@ -22,7 +23,7 @@ class exportxml:
             inittestsuite.setAttribute("name", "")   
             testsuite_s.append(testsuite)
             testsuite_s[i] =  dom.createElement("testsuite")       
-            testsuite_s[i].setAttribute("name", self.testdata[i].get("testsuite").encode('utf-8'))   
+            testsuite_s[i].setAttribute("name", str(self.testdata[i].get("testsuite")))   
             testcase_s=[]
             summary_s =[]
             preconditions_s =[]
@@ -43,11 +44,11 @@ class exportxml:
                 importance_s.append(importance)
                 steps = dom.createElement("steps")
                 steps_s.append(steps)                                        
-                testcase_s[j].setAttribute("name", self.testdata[i].get("testcases")[j].encode('utf-8'))                                                                                    
-                summary_text = dom.createTextNode(self.testdata[i].get("summary")[j].encode('utf-8'))
-                precondition_text = dom.createTextNode(self.testdata[i].get("precondition")[j].encode('utf-8'))
-                execution_type_text = dom.createTextNode(self.testdata[i].get("execution_type")[j].encode('utf-8'))
-                importance_text = dom.createTextNode(self.testdata[i].get("importance")[j].encode('utf-8'))            
+                testcase_s[j].setAttribute("name", str(self.testdata[i].get("testcases")[j]))                                                                                    
+                summary_text = dom.createTextNode(str(self.testdata[i].get("summary")[j]))
+                precondition_text = dom.createTextNode(str(self.testdata[i].get("precondition")[j]))
+                execution_type_text = dom.createTextNode(str(self.testdata[i].get("execution_type")[j]))
+                importance_text = dom.createTextNode(str(self.testdata[i].get("importance")[j]))            
                 summary_s[j].appendChild(summary_text)                
                 preconditions_s[j].appendChild(precondition_text)                
                 execution_type_s[j].appendChild(execution_type_text)                
@@ -73,10 +74,10 @@ class exportxml:
                     actions_s.append(actions)
                     expectedresults_s.append(expectedresults)
                     step_execution_type_s.append(step_execution_type)       
-                    step_number_text = dom.createTextNode(self.testdata[i].get("steps")[j][k].get("stepid").encode('utf-8'))
-                    actions_text = dom.createTextNode(self.testdata[i].get("steps")[j][k].get("action").encode('utf-8'))
-                    expectedresults_text = dom.createTextNode(self.testdata[i].get("steps")[j][k].get("result").encode('utf-8'))
-                    step_execution_type_text = dom.createTextNode(self.testdata[i].get("steps")[j][k].get("execution_type").encode('utf-8'))                    
+                    step_number_text = dom.createTextNode(str(self.testdata[i].get("steps")[j][k].get("stepid")))
+                    actions_text = dom.createTextNode(str(self.testdata[i].get("steps")[j][k].get("action")))
+                    expectedresults_text = dom.createTextNode(str(self.testdata[i].get("steps")[j][k].get("result")))
+                    step_execution_type_text = dom.createTextNode(str(self.testdata[i].get("steps")[j][k].get("execution_type")))                    
                     step_number_s[k].appendChild(step_number_text)
                     actions_s[k].appendChild(actions_text)
                     expectedresults_s[k].appendChild(expectedresults_text)
@@ -93,7 +94,7 @@ class exportxml:
             inittestsuite.appendChild(testsuite_s[i])                
             i=i+1    
         dom.appendChild(inittestsuite)
-        f=file(self.output+"/"+self.filename+".xml",'w')
+        f=open(self.output+"/"+self.filename+".xml",'w',encoding = "utf-8")
         dom.writexml(f,'',' ','\n','utf-8')
         f.close()
 
@@ -123,40 +124,40 @@ class readexcel:
             step ={}
             testsuite = {}
             if self.table.cell(i,0).value and self.table.cell(i,1).value and self.table.cell(i,7).value:
-                testsuite.setdefault("testsuite",unicode(self.table.cell(i,0).value))
-                self.testcases.append(unicode(self.table.cell(i,1).value))
-                self.summary.append(unicode(self.table.cell(i,2).value))
-                self.preconditon.append(unicode(self.table.cell(i,3).value))
-                self.casetype.append(unicode(self.table.cell(i,4).value))
-                self.importance.append(unicode(self.table.cell(i,5).value))
-                step.setdefault("stepid",unicode(self.table.cell(i,6).value))
-                step.setdefault("action",unicode(self.table.cell(i,7).value))
-                step.setdefault("result",unicode(self.table.cell(i,8).value))
-                step.setdefault("execution_type",unicode(self.table.cell(i,9).value))
+                testsuite.setdefault("testsuite",self.table.cell(i,0).value)
+                self.testcases.append(self.table.cell(i,1).value)
+                self.summary.append(self.table.cell(i,2).value)
+                self.preconditon.append(self.table.cell(i,3).value)
+                self.casetype.append(self.table.cell(i,4).value)
+                self.importance.append(self.table.cell(i,5).value)
+                step.setdefault("stepid",self.table.cell(i,6).value)
+                step.setdefault("action",self.table.cell(i,7).value)
+                step.setdefault("result",self.table.cell(i,8).value)
+                step.setdefault("execution_type",self.table.cell(i,9).value)
                 self.steps.append(step)
                 self.testsuites.append(testsuite)
                 
                 
             elif not self.table.cell(i,0).value and not self.table.cell(i,1).value and self.table.cell(i,7).value:
 
-                step.setdefault("stepid",unicode(self.table.cell(i,6).value))
-                step.setdefault("action",unicode(self.table.cell(i,7).value))
-                step.setdefault("result",unicode(self.table.cell(i,8).value))
-                step.setdefault("execution_type",unicode(self.table.cell(i,9).value))
+                step.setdefault("stepid",self.table.cell(i,6).value)
+                step.setdefault("action",self.table.cell(i,7).value)
+                step.setdefault("result",self.table.cell(i,8).value)
+                step.setdefault("execution_type",self.table.cell(i,9).value)
                 self.steps.append(step)
                 
             elif not self.table.cell(i,0).value and self.table.cell(i,1).value and self.table.cell(i,7).value:
 
                 
-                self.testcases.append(unicode(self.table.cell(i,1).value))
-                self.summary.append(unicode(self.table.cell(i,2).value))
-                self.preconditon.append(unicode(self.table.cell(i,3).value))
-                self.casetype.append(unicode(self.table.cell(i,4).value))
-                self.importance.append(unicode(self.table.cell(i,5).value))
-                step.setdefault("stepid",unicode(self.table.cell(i,6).value))
-                step.setdefault("action",unicode(self.table.cell(i,7).value))
-                step.setdefault("result",unicode(self.table.cell(i,8).value))
-                step.setdefault("execution_type",unicode(self.table.cell(i,9).value))
+                self.testcases.append(self.table.cell(i,1).value)
+                self.summary.append(self.table.cell(i,2).value)
+                self.preconditon.append(self.table.cell(i,3).value)
+                self.casetype.append(self.table.cell(i,4).value)
+                self.importance.append(self.table.cell(i,5).value)
+                step.setdefault("stepid",self.table.cell(i,6).value)
+                step.setdefault("action",self.table.cell(i,7).value)
+                step.setdefault("result",self.table.cell(i,8).value)
+                step.setdefault("execution_type",self.table.cell(i,9).value)
                 self.steps.append(step)
             i=i+1
         self.testdata.append(self.testsuites)
@@ -345,11 +346,13 @@ class exceloperate:
 
 if __name__ == "__main__":
     
-
-    testexcel = raw_input("Please input the path of your excel file(like 'D:/testexcel.xls'):\n")
-    sheetname = raw_input("Please input your sheetname of testcase(like 'Sheet1'):\n")
-    output = raw_input("Please input your output folder (like 'D:/testcase') :\n")
-    filename = raw_input("Please input your filename (like 'testcase'):\n")
+    d = changetoxml("C:/Users/xun/workspace/testtool/Model/Test Case.xls","Function Test","D:/","222")
+    d.run()
+'''    
+    testexcel =input("Please input the path of your excel file(like 'D:/testexcel.xls'):\n")
+    sheetname = input("Please input your sheetname of testcase(like 'Sheet1'):\n")
+    output = input("Please input your output folder (like 'D:/testcase') :\n")
+    filename = input("Please input your filename (like 'testcase'):\n")
     
     if os.path.exists(testexcel):     
         sheets = exceloperate(testexcel).getSheetNames()   
@@ -368,3 +371,4 @@ if __name__ == "__main__":
     aa =changetoxml(testexcel,sheetname,output,filename)
     aa.run()
     print("ok")
+'''
