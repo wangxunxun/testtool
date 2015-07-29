@@ -1,10 +1,10 @@
-
+#coding=utf-8
 '''
 Created on 2015年2月28日
 
 @author: xun
 '''
-#coding=utf-8
+
 from xml.dom import minidom
 import xlrd
 import os
@@ -63,7 +63,7 @@ class ExportXmlNoStep:
             i=i+1    
         dom.appendChild(inittestsuite)
         f=open(self.output+"/"+self.filename+".xml",'w',encoding = "utf-8")
-        dom.writexml(f,'',' ','\n')
+        dom.writexml(f,'',' ','\n',"utf-8")
         f.close()
 
 class readexcel:
