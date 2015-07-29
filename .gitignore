@@ -13,3 +13,4 @@
 /tools/__pycache__/*.pyc
 /GUI/__pycache__/*.pyc
 /GUI/mainwindow/__pycache__/*.pyc
+/__pycache__/*.pyc
