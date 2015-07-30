@@ -55,6 +55,7 @@ class MysqlUI(QtGui.QDialog):
         self.disConnectButton.setDisabled(True)
         self.runButton = QtGui.QPushButton(self.trUtf8("Run"))
         self.runButton.setDisabled(True)
+        self.jiaochengButton = QtGui.QPushButton(self.trUtf8("常用语句查询"))
         
         self.script = QtGui.QLabel(self)
         self.script.setText(self.trUtf8("Please input script"))
@@ -71,10 +72,11 @@ class MysqlUI(QtGui.QDialog):
         buttonlayout.addWidget(self.connectButton)
         buttonlayout.addWidget(self.disConnectButton)
        
-        scriptlayout = QtGui.QVBoxLayout()
-        scriptlayout.addWidget(self.script)
-        scriptlayout.addWidget(self.scriptTextEdit)
-        scriptlayout.addWidget(self.runButton)
+        scriptlayout = QtGui.QGridLayout()
+        scriptlayout.addWidget(self.script,0,0)
+        scriptlayout.addWidget(self.scriptTextEdit,1,0,1,2)
+        scriptlayout.addWidget(self.runButton,2,0)
+        scriptlayout.addWidget(self.jiaochengButton,2,1)
         
         resultlayout = QtGui.QVBoxLayout()
         resultlayout.addWidget(self.result)
@@ -116,6 +118,7 @@ class MysqlUI(QtGui.QDialog):
         self.connectButton.clicked.connect(self.connectMysql)
         self.runButton.clicked.connect(self.run)
         self.disConnectButton.clicked.connect(self.stop)
+        self.jiaochengButton.clicked.connect(self.openexcel)
     def connectMysql(self):
         host = self.hostLineEdit.text()
         user = self.userLineEdit.text()
@@ -158,6 +161,9 @@ class MysqlUI(QtGui.QDialog):
         self.disConnectButton.setDisabled(True)
         self.connectButton.setEnabled(True)
         self.runButton.setDisabled(True)
+        self.resultTextEdit.append("已断开连接")
+    def openexcel(self):
+        ShellExecute(0,"open",u"Model\mysql操作.xls","","",SW_SHOW)
         
         
         
