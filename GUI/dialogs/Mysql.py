@@ -114,9 +114,11 @@ class MysqlUI(QtGui.QDialog):
         mainlayout.setStretch(1,30)
 
         self.setLayout(mainlayout)
+        QtCore.QObject.connect(self.connectButton, QtCore.SIGNAL('clicked()'), self.connectMysql)
         
-        self.connectButton.clicked.connect(self.connectMysql)
+#        self.connectButton.clicked.connect(self.connectMysql)
         self.runButton.clicked.connect(self.run)
+#        self.runButton.clicked.emit("canshu") 有参数时需要用此方法发送参数
         self.disConnectButton.clicked.connect(self.stop)
         self.jiaochengButton.clicked.connect(self.openexcel)
     def connectMysql(self):

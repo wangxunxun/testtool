@@ -44,7 +44,10 @@ class mysqlconnect:
 
     def close(self):                  
         self.cur.close()
-        self.conn.commit()  
+        try:
+            self.conn.commit()
+        except:
+            self.conn.rollback()
         self.conn.close()
         
 if __name__ == "__main__":  
