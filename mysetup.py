@@ -21,6 +21,7 @@ setup (
                         'script': 'Testtool.py'
                   }],
        data_files=[("Model",
-                   ["Model/Test Case.xls","Model/Test Case Without Step.xls",u"Model/全国中小企业股转系统官网前台_Test Case_v1.3.xls",
-                    u"Model/QQ音乐_Android V3.6.1.9_Normal Test Result_Beta.xls"])]
+                   ["Model/Test Case.xls","Model/Test Case Without Step.xls","Model/全国中小企业股转系统官网前台_Test Case_v1.3.xls",
+                    "Model/QQ音乐_Android V3.6.1.9_Normal Test Result_Beta.xls",
+                    "Model/mysql操作.xls"])]
       )
