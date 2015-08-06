@@ -14,6 +14,8 @@ class mysqlconnect:
         self.db = db
         self.charset = charset
         self.port = port
+        self.conn=pymysql.connect(host = self.host,user = self.user,passwd = self.passwd,db = self.db,port = self.port,charset = self.charset)
+        self.cur = self.conn.cursor()
         
     def connect(self):
         try:
