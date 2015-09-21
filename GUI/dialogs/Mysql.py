@@ -1,5 +1,6 @@
+#coding=utf-8
 '''
-Created on 2015年7月30日
+Created on 2015骞�7鏈�30鏃�
 
 @author: xun
 '''
@@ -55,7 +56,7 @@ class MysqlUI(QtGui.QDialog):
         self.disConnectButton.setDisabled(True)
         self.runButton = QtGui.QPushButton(self.trUtf8("Run"))
         self.runButton.setDisabled(True)
-        self.jiaochengButton = QtGui.QPushButton(self.trUtf8("常用语句查询"))
+        self.jiaochengButton = QtGui.QPushButton(self.trUtf8("甯哥敤璇彞鏌ヨ"))
         
         self.script = QtGui.QLabel(self)
         self.script.setText(self.trUtf8("Please input script"))
@@ -118,7 +119,7 @@ class MysqlUI(QtGui.QDialog):
         
 #        self.connectButton.clicked.connect(self.connectMysql)
         self.runButton.clicked.connect(self.run)
-#        self.runButton.clicked.emit("canshu") 有参数时需要用此方法发送参数
+#        self.runButton.clicked.emit("canshu") 鏈夊弬鏁版椂闇�瑕佺敤姝ゆ柟娉曞彂閫佸弬鏁�
         self.disConnectButton.clicked.connect(self.stop)
         self.jiaochengButton.clicked.connect(self.openexcel)
     def connectMysql(self):
@@ -139,7 +140,7 @@ class MysqlUI(QtGui.QDialog):
             self.disConnectButton.setEnabled(True)
             self.connectButton.setDisabled(True)
             self.runButton.setEnabled(True)
-            self.resultTextEdit.append("连接成功")
+            self.resultTextEdit.append("杩炴帴鎴愬姛")
             self.resultTextEdit.moveCursor(QtGui.QTextCursor.End)
         
 
@@ -153,8 +154,8 @@ class MysqlUI(QtGui.QDialog):
             self.resultTextEdit.append("error:"+result)
             self.resultTextEdit.moveCursor(QtGui.QTextCursor.End)
         else:
-            self.resultTextEdit.append("返回结果的数量："+ str(result[0]))
-            self.resultTextEdit.append("返回结果：" + str(result[1]))
+            self.resultTextEdit.append("杩斿洖缁撴灉鐨勬暟閲忥細"+ str(result[0]))
+            self.resultTextEdit.append("杩斿洖缁撴灉锛�" + str(result[1]))
             self.resultTextEdit.moveCursor(QtGui.QTextCursor.End)
         
         
@@ -163,9 +164,9 @@ class MysqlUI(QtGui.QDialog):
         self.disConnectButton.setDisabled(True)
         self.connectButton.setEnabled(True)
         self.runButton.setDisabled(True)
-        self.resultTextEdit.append("已断开连接")
+        self.resultTextEdit.append("宸叉柇寮�杩炴帴")
     def openexcel(self):
-        ShellExecute(0,"open",u"Model\mysql操作.xls","","",SW_SHOW)
+        ShellExecute(0,"open",u"Model\mysql鎿嶄綔.xls","","",SW_SHOW)
         
         
         

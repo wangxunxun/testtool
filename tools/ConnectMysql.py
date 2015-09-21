@@ -1,5 +1,6 @@
+#coding=utf-8
 '''
-Created on 2015年7月30日
+Created on 2015骞�7鏈�30鏃�
 
 @author: xun
 '''
