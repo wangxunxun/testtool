@@ -14,6 +14,7 @@ from GUI.dialogs.toxml2 import toXmlUI2
 from GUI.dialogs.ToXmlByBeyondsoft import toXmlUIByBeyondsoft
 from GUI.dialogs.ToXmlByBeyondsoft2 import toXmlUIByBeyondsoft2
 from GUI.dialogs.Mysql import MysqlUI
+from GUI.dialogs.testApi import TestApi
 
 class MainWindow(QtGui.QMainWindow):    
     def __init__(self):
@@ -31,7 +32,8 @@ class MainWindow(QtGui.QMainWindow):
         toXmlAction2 = self.createAction(u'&Testlink Excel To Xml', self.toXml2)
         toXmlAction3 = self.createAction(u'&Testlink Excel To Xml by beyondsoft', self.toXml3)
         toXmlAction4 = self.createAction(u'&Testlink Excel To Xml by beyondsoft2', self.toXml4)   
-        mysqlAction = self.createAction(u'&Mysqltool', self.mysql)        
+        mysqlAction = self.createAction(u'&Mysqltool', self.mysql)      
+        testApiAction = self.createAction(u'&TestApi', self.testApi)   
         
         aboutUsAction = self.createAction(u'&关于我们',self.test)
         helpmenu.addAction(aboutUsAction)
@@ -40,6 +42,7 @@ class MainWindow(QtGui.QMainWindow):
         toolMenu.addAction(toXmlAction3)
         toolMenu.addAction(toXmlAction4)
         toolMenu.addAction(mysqlAction)
+        toolMenu.addAction(testApiAction)
 
 #        self.testLinkButton = QtGui.QPushButton(self.trUtf8("TestLink安装"))
 #        dock = QtGui.QDockWidget("Customers", self)
@@ -75,6 +78,10 @@ class MainWindow(QtGui.QMainWindow):
         
     def mysql(self):
         dialog = MysqlUI()
+        dialog.exec_()
+        
+    def testApi(self):
+        dialog = TestApi()
         dialog.exec_()
         
           
