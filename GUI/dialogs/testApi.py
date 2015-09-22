@@ -73,7 +73,7 @@ class TestApi(QtGui.QDialog):
         self.url = QtGui.QLabel(self)
         self.url.setText(self.trUtf8("Url"))
         self.urlLineEdit = QtGui.QLineEdit(self)  
-        self.urlLineEdit.setText("http://127.0.0.1:5000/api/v1.0/User/EmitCode")
+        self.urlLineEdit.setText("http://120.24.255.213:5000/Passenger/User/Regist")
         
         self.json_type = QtGui.QRadioButton(self)
         self.json_type.setText(self.trUtf8("JSON"))
@@ -120,6 +120,7 @@ class TestApi(QtGui.QDialog):
         self.script = QtGui.QLabel(self)
         self.script.setText(self.trUtf8("Please input json info"))
         self.scriptTextEdit = QtGui.QTextEdit(self)
+        self.scriptTextEdit.setText('''{"phoneNumber":"18627802681","password":"1234576"}''')
         scriptlayout = QtGui.QGridLayout()
         scriptlayout.addWidget(self.json_type,0,0)
         scriptlayout.addWidget(self.excel_type,0,1)
@@ -282,10 +283,12 @@ class TestApi(QtGui.QDialog):
             path = output+"/"+name+".xls"
             try:
                 self.oprmysql.toExcel(path)
-                ShellExecute(0,"open",path,"","",SW_SHOW)
+                
             except Exception as e:
-                self.errorTipLable1.setText(self.trUtf8(e))
-                self.errorTipLable1.show() 
+                print(e)
+                
+            ShellExecute(0,"open",path,"","",SW_SHOW)
+
                 
                 
             
@@ -452,14 +455,14 @@ class TestApi(QtGui.QDialog):
                 duration = str(result.get("duration"))
         
                 responses = result.get("responses")
-                requests = result.get("requests")
+                requestsdata = result.get("requests")
                 failCount = str(result.get("failCount"))
                 successCount = str(result.get("successCount"))
         
         
                 i = 0
-                while i <len(requests):
-                    self.resultTextEdit.append("request:"+str(requests[i]))
+                while i <len(requestsdata):
+                    self.resultTextEdit.append("request:"+str(requestsdata[i]))
                     self.resultTextEdit.append("response:"+str(responses[i]))
                     self.resultTextEdit.append("-"*100)
                     i = i+1

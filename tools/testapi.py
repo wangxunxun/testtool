@@ -12,6 +12,7 @@ import xlrd
 from dominate.tags import table
 import datetime
 import pymysql
+import requests
 
 class oprMysql:
     def __init__(self,host,user,passwd,db,port,charset):
@@ -231,56 +232,53 @@ class sendAPI:
         self.url =url
         self.data = data
         self.method = method
-        self.contentType = contentType
-        self.h = httplib2.Http(".cache")  
+        self.contentType = contentType 
         
     def run(self):
         if self.method == 'POST' and self.contentType == 'json':
             successCount = 0
             failCount =0
             result = {}
-            requests = []
+            requestsdata = []
             responses = []
             response = {}
             start = datetime.datetime.now()
             if isinstance(self.data, list):
                 
                 for i in self.data:
-                    encodedjson = json.dumps(i)   
-                    requests.append(encodedjson)
-                    resp, content = self.h.request(self.url, self.method,encodedjson, headers={"Content-Type": "application/%s"%self.contentType} )  
-                    response.setdefault("response",resp)
-                    response.setdefault("content",content)                
+                    requestsdata.append(i)
+                    r = requests.post(self.url, data=i)   
+                    response.setdefault("text",r.text)
+                    response.setdefault("status_code",r.status_code)                
                     responses.append(response)
+
+
                     
-                    if resp.get('status')=='200':
-                        print(content)
+                    if r.status_code==200:
                         successCount = successCount +1
                     else:
                         failCount = failCount +1
-            elif isinstance(self.data, dict):
-                encodedjson = json.dumps(self.data)   
-                requests.append(encodedjson)
-                resp, content = self.h.request(self.url, self.method,encodedjson, headers={"Content-Type": "application/%s"%self.contentType} )  
-                response.setdefault("response",resp)
-                response.setdefault("content",content)                
+            elif isinstance(self.data, dict): 
+                requestsdata.append(self.data)
+                r = requests.post(self.url, data=self.data)   
+
+                response.setdefault("text",r.text)
+                response.setdefault("status_code",r.status_code)                
                 responses.append(response)
                 
-                if resp.get('status')=='200':
-                    print(content)
+                if r.status_code==200:
                     successCount = successCount +1
                 else:
                     failCount = failCount +1
             else:
-                print(u"json格式不正确")
                 return u"json格式不正确"
             end = datetime.datetime.now()
             duration = end - start
-            duration =  duration.seconds +duration.microseconds/1000000
+            duration =  duration.seconds +float(duration.microseconds)/1000000
             result.setdefault('duration',duration)
             result.setdefault('successCount',successCount)
             result.setdefault('failCount',failCount)
-            result.setdefault("requests",requests)
+            result.setdefault("requests",requestsdata)
             result.setdefault("responses",responses)
             print(result)
             return result
@@ -288,45 +286,46 @@ class sendAPI:
             successCount = 0
             failCount =0
             result = {}
-            requests = []
+            requestsdata = []
             responses = []
             response = {}
             start = datetime.datetime.now()
             if isinstance(self.data, list):
                 
                 for i in self.data:
-                    encodedjson = json.dumps(i)   
-                    requests.append(encodedjson)
-                    resp, content = self.h.request(self.url, self.method,encodedjson, headers={"Content-Type": "application/%s"%self.contentType} )  
-                    response.setdefault("response",resp)
-                    response.setdefault("content",content)                
+                    requestsdata.append(i)
+                    r = requests.get(self.url, params=i)   
+                    response.setdefault("text",r.text)
+                    response.setdefault("status_code",r.status_code)                
                     responses.append(response)
+
+
                     
-                    if resp.get('status')=='200':
-                        print(content)
+                    if r.status_code==200:
                         successCount = successCount +1
                     else:
                         failCount = failCount +1
-            elif isinstance(self.data, dict):
-                encodedjson = json.dumps(self.data)   
-                requests.append(encodedjson)
-                resp, content = self.h.request(self.url, self.method,encodedjson, headers={"Content-Type": "application/%s"%self.contentType} )  
-                response.setdefault("response",resp)
-                response.setdefault("content",content)                
+            elif isinstance(self.data, dict): 
+                requestsdata.append(self.data)
+                r = requests.get(self.url, params=self.data)   
+
+                response.setdefault("text",r.text)
+                response.setdefault("status_code",r.status_code)                
                 responses.append(response)
                 
-                if resp.get('status')=='200':
-                    print(content)
+                if r.status_code==200:
                     successCount = successCount +1
                 else:
                     failCount = failCount +1
+            else:
+                return u"json格式不正确"
             end = datetime.datetime.now()
             duration = end - start
-            duration =  duration.seconds +duration.microseconds/1000000
+            duration =  duration.seconds +float(duration.microseconds)/1000000
             result.setdefault('duration',duration)
             result.setdefault('successCount',successCount)
             result.setdefault('failCount',failCount)
-            result.setdefault("requests",requests)
+            result.setdefault("requests",requestsdata)
             result.setdefault("responses",responses)
             print(result)
             return result
