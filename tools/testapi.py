@@ -1,9 +1,9 @@
 #coding=utf-8
-'''
-Created on 2015年8月19日
+import sys
 
-@author: xun
-'''
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 import httplib2
 import json
 import xlwt
@@ -13,6 +13,13 @@ from dominate.tags import table
 import datetime
 import pymysql
 import requests
+
+def zp(r):
+    try:
+        print(json.dumps(json.loads(r.text), indent=4,ensure_ascii=False, encoding="utf-8"))
+        return json.dumps(json.loads(r.text), indent=4,ensure_ascii=False, encoding="utf-8")
+    except Exception, e:
+        print r.text
 
 class oprMysql:
     def __init__(self,host,user,passwd,db,port,charset):
@@ -154,21 +161,24 @@ class oprexcel:
         i = 0
         while i < len(tabledata):
             for j in range(0,len(tabledata[i])):
-                sheet1.write(i+1,j,tabledata[i][j])
+                sheet1.write(i+1,j,str(tabledata[i][j]).decode('UTF-8'))
             i = i+1
+        
         f.save(self.excelpath)
         
     def saveTables(self,tablesname,tablesheader,tablesdata):
         f = xlwt.Workbook()
         for tablename in tablesname:
+            print(tablename)
             sheet1 = f.add_sheet(tablename,cell_overwrite_ok=True) 
             for i in range(0,len(tablesheader.get(tablename))):
                 sheet1.write(0,i,tablesheader.get(tablename)[i])
             i = 0
             while i < len(tablesdata.get(tablename)):
                 for j in range(0,len(tablesdata.get(tablename)[i])):
-                    sheet1.write(i+1,j,tablesdata.get(tablename)[i][j])
-                i = i+1            
+                    sheet1.write(i+1,j,str(tablesdata.get(tablename)[i][j]).decode('UTF-8'))
+                i = i+1       
+        
         f.save(self.excelpath)
         print('Save successfully')
 
@@ -248,6 +258,7 @@ class sendAPI:
                 for i in self.data:
                     requestsdata.append(i)
                     r = requests.post(self.url, data=i)   
+
                     response.setdefault("text",r.text)
                     response.setdefault("status_code",r.status_code)                
                     responses.append(response)
@@ -263,7 +274,8 @@ class sendAPI:
                 r = requests.post(self.url, data=self.data)   
 
                 response.setdefault("text",r.text)
-                response.setdefault("status_code",r.status_code)                
+                response.setdefault("status_code",r.status_code) 
+            
                 responses.append(response)
                 
                 if r.status_code==200:

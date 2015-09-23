@@ -97,7 +97,7 @@ class TestApi(QtGui.QDialog):
         self.result.setText(self.trUtf8("Result"))
         self.resultTextEdit = QtGui.QTextEdit(self)
         
-        self.errorTipLable1 = QtGui.QLabel()   
+ 
 
         self.errorTipLable2 = QtGui.QLabel()      
        
@@ -192,7 +192,7 @@ class TestApi(QtGui.QDialog):
         left_layout.addLayout(hbox7)
         left_layout.addLayout(hbox8)
         left_layout.addWidget(self.connectButton)
-        left_layout.addWidget(self.errorTipLable1)
+
 
 
         
@@ -218,7 +218,7 @@ class TestApi(QtGui.QDialog):
         leftlayout.addWidget(self.savenameLineEdit,7,1,1,2)  
 
         leftlayout.addWidget(self.connectButton,8,1,1,2)  
-        leftlayout.addWidget(self.errorTipLable1,9,0,1,3)  
+
      
              
         rightlayout = QtGui.QGridLayout()
@@ -245,7 +245,6 @@ class TestApi(QtGui.QDialog):
 #        self.runButton.clicked.emit("canshu") 有参数时需要用此方法发送参数
         self.jiaochengButton.clicked.connect(self.openexcel)
     def toExcel(self):
-        self.errorTipLable1.hide()
         host = self.hostLineEdit.text()
         user = self.userLineEdit.text()
         passwd = self.passwdLineEdit.text()
@@ -255,37 +254,42 @@ class TestApi(QtGui.QDialog):
         output = self.outputLineEdit.text()
         name = self.savenameLineEdit.text()
         if not host:
-            self.errorTipLable1.setText(self.trUtf8("host不能为空"))
-            self.errorTipLable1.show()
+            self.resultTextEdit.append(u"host不能为空")
+
         elif not user:
-            self.errorTipLable1.setText(self.trUtf8("user不能为空"))
-            self.errorTipLable1.show()
+            self.resultTextEdit.append(u"user不能为空")
+
         elif not passwd:
-            self.errorTipLable1.setText(self.trUtf8("passwd不能为空"))
-            self.errorTipLable1.show()
+            self.resultTextEdit.append(u"passwd不能为空")
+
         elif not db:
-            self.errorTipLable1.setText(self.trUtf8("db不能为空"))
-            self.errorTipLable1.show()
+            self.resultTextEdit.append(u"db不能为空")
+
         elif not port:
-            self.errorTipLable1.setText(self.trUtf8("port不能为空"))
-            self.errorTipLable1.show()
+            self.resultTextEdit.append(u"port不能为空")
+
         elif not charset:
-            self.errorTipLable1.setText(self.trUtf8("charset不能为空"))
-            self.errorTipLable1.show()
+            self.resultTextEdit.append(u"charset不能为空")
+
         elif not output:
-            self.errorTipLable1.setText(self.trUtf8("output不能为空"))
-            self.errorTipLable1.show()
+            self.resultTextEdit.append(u"output不能为空")
+
         elif not name:
-            self.errorTipLable1.setText(self.trUtf8("excel文件名不能为空"))
-            self.errorTipLable1.show()
+            self.resultTextEdit.append(u"excel文件名不能为空")
+
         else:
-            self.oprmysql = oprMysql(host,user,passwd,db,port,charset)
+            try:
+                self.oprmysql = oprMysql(host,user,passwd,db,port,charset)
+            except Exception as e:
+                self.resultTextEdit.append(str(e))
+                return
             path = output+"/"+name+".xls"
             try:
                 self.oprmysql.toExcel(path)
                 
             except Exception as e:
-                print(e)
+                self.resultTextEdit.append(str(e))
+                return
                 
             ShellExecute(0,"open",path,"","",SW_SHOW)
 
@@ -391,8 +395,15 @@ class TestApi(QtGui.QDialog):
         
                 i = 0
                 while i <len(requests):
-                    self.resultTextEdit.append("request:"+str(requests[i]))
-                    self.resultTextEdit.append("response:"+str(responses[i]))
+                    print(responses[i])
+                    req = json.dumps(requests[i], indent=4,encoding='UTF-8', ensure_ascii=False)
+                    res = json.dumps(responses[i], indent=4,encoding='UTF-8', ensure_ascii=False)
+                    self.resultTextEdit.append("request:\n"+req)
+                    self.resultTextEdit.append("response:\n"+res)
+#                    print(type(requests[i]))
+#                    self.resultTextEdit.append("request:\n"+str(requests[i]))
+#                    self.resultTextEdit.append("response:\n"+responses[i])                    
+                    
                     self.resultTextEdit.append("-"*100)
                     i = i+1
         
@@ -417,8 +428,10 @@ class TestApi(QtGui.QDialog):
         
                 i = 0
                 while i <len(requests):
-                    self.resultTextEdit.append("request:"+str(requests[i]))
-                    self.resultTextEdit.append("response:"+str(responses[i]))
+                    req = json.dumps(requests[i], indent=4,encoding='UTF-8', ensure_ascii=False)
+                    res = json.dumps(responses[i], indent=4,encoding='UTF-8', ensure_ascii=False)
+                    self.resultTextEdit.append("request:\n"+req)
+                    self.resultTextEdit.append("response:\n"+res)
                     self.resultTextEdit.append("-"*100)
                     i = i+1
         
@@ -462,8 +475,11 @@ class TestApi(QtGui.QDialog):
         
                 i = 0
                 while i <len(requestsdata):
-                    self.resultTextEdit.append("request:"+str(requestsdata[i]))
-                    self.resultTextEdit.append("response:"+str(responses[i]))
+                    req = json.dumps(requestsdata[i], indent=4,encoding='UTF-8', ensure_ascii=False)
+                    res = json.dumps(responses[i], indent=4,encoding='UTF-8', ensure_ascii=False)
+                    self.resultTextEdit.append("request:\n"+req)
+                    self.resultTextEdit.append("response:\n"+res)
+
                     self.resultTextEdit.append("-"*100)
                     i = i+1
         
