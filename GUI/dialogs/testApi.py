@@ -76,7 +76,7 @@ class TestApi(QtGui.QDialog):
         self.urlLineEdit = QtGui.QLineEdit(self)  
         self.urlLineEdit.setText("http://apis.baidu.com/heweather/weather/free")
 #        self.urlLineEdit.setText("http://120.24.255.213:5000/Passenger/User/Regist")
-
+#        self.urlLineEdit.setText("http://127.0.0.1:5000/api/v1.0/User/Regist")
         
         
         self.headers = QtGui.QLabel(self)
@@ -89,13 +89,13 @@ class TestApi(QtGui.QDialog):
         self.form_type.setChecked(True)
         self.excel_type = QtGui.QRadioButton(self)
         self.excel_type.setText(self.trUtf8("EXCEL"))
-        self.json_type = QtGui.QRadioButton(self)
-        self.json_type.setText(self.trUtf8("Json"))
+#        self.json_type = QtGui.QRadioButton(self)
+#        self.json_type.setText(self.trUtf8("Json"))
         
         self.buttongroup1 = QtGui.QButtonGroup(self)
         self.buttongroup1.addButton(self.form_type)
         self.buttongroup1.addButton(self.excel_type)
-        self.buttongroup1.addButton(self.json_type)
+#        self.buttongroup1.addButton(self.json_type)
         
         self.get_type = QtGui.QRadioButton(self)
         self.get_type.setText(self.trUtf8("GET"))
@@ -127,16 +127,18 @@ class TestApi(QtGui.QDialog):
         self.chooseSheet = QtGui.QComboBox()
         self.chooseSheet.addItem(self.trUtf8("请选择"))
 
-
+        hbox1 = QtGui.QHBoxLayout()
+        hbox1.addWidget(self.form_type)
+        hbox1.addWidget(self.excel_type)
+        
         self.script = QtGui.QLabel(self)
         self.script.setText(self.trUtf8("Please input params"))
         self.scriptTextEdit = QtGui.QTextEdit(self)
         self.scriptTextEdit.setText('''{"city":"beijing"}''')
 #        self.scriptTextEdit.setText('''{"phoneNumber":"18627802681","password":"1234576"}''')
         scriptlayout = QtGui.QGridLayout()
-        scriptlayout.addWidget(self.form_type,0,0)
-        scriptlayout.addWidget(self.excel_type,0,1)
-        scriptlayout.addWidget(self.json_type,0,2)
+        scriptlayout.addLayout(hbox1,0,0,1,1)
+#        scriptlayout.addWidget(self.json_type,0,2)
 
         
         scriptlayout.addWidget(self.url,1,0)
@@ -164,49 +166,8 @@ class TestApi(QtGui.QDialog):
         resultlayout.addWidget(self.resultTextEdit)
         resultlayout.addWidget(self.errorTipLable2)
         
-        hbox1 = QtGui.QHBoxLayout()
-        hbox1.addWidget(self.host)
-        hbox1.addWidget(self.hostLineEdit)
+
         
-        hbox2 = QtGui.QHBoxLayout()
-        hbox2.addWidget(self.user)
-        hbox2.addWidget(self.userLineEdit)
-        
-        hbox3 = QtGui.QHBoxLayout()
-        hbox3.addWidget(self.passwd)
-        hbox3.addWidget(self.passwdLineEdit)
-        
-        hbox4 = QtGui.QHBoxLayout()
-        hbox4.addWidget(self.db)
-        hbox4.addWidget(self.dbLineEdit)
-        
-        hbox5 = QtGui.QHBoxLayout()
-        hbox5.addWidget(self.port)
-        hbox5.addWidget(self.portLineEdit)
-        
-        hbox6 = QtGui.QHBoxLayout()
-        hbox6.addWidget(self.charset)
-        hbox6.addWidget(self.charsetLineEdit)
-        
-        hbox7 = QtGui.QHBoxLayout()
-        hbox7.addWidget(self.output)
-        hbox7.addWidget(self.outputLineEdit)
-        hbox7.addWidget(self.chooseOutPutButton)
-        
-        hbox8 = QtGui.QHBoxLayout()
-        hbox8.addWidget(self.savename)
-        hbox8.addWidget(self.savenameLineEdit)
-        
-        left_layout = QtGui.QVBoxLayout()
-        left_layout.addLayout(hbox1)
-        left_layout.addLayout(hbox2)
-        left_layout.addLayout(hbox3)
-        left_layout.addLayout(hbox4)
-        left_layout.addLayout(hbox5)
-        left_layout.addLayout(hbox6)
-        left_layout.addLayout(hbox7)
-        left_layout.addLayout(hbox8)
-        left_layout.addWidget(self.connectButton)
 
 
 
@@ -256,7 +217,7 @@ class TestApi(QtGui.QDialog):
 #        self.connectButton.clicked.connect(self.connectMysql)
         self.runButton.clicked.connect(self.run)
         self.form_type.clicked.connect(self.chooseFormType)
-        self.json_type.clicked.connect(self.chooseFormType)
+#        self.json_type.clicked.connect(self.chooseFormType)
         self.excel_type.clicked.connect(self.chooseExcelType)
 #        self.runButton.clicked.emit("canshu") 有参数时需要用此方法发送参数
         self.jiaochengButton.clicked.connect(self.openexcel)
@@ -554,8 +515,6 @@ class TestApi(QtGui.QDialog):
                 self.resultTextEdit.moveCursor(QtGui.QTextCursor.End)
         else:
             pass
-            
-            
         
         
     def stop(self):
