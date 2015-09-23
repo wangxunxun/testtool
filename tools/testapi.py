@@ -231,7 +231,7 @@ class readExcel():
         return tablesdata
 
 class sendAPI:
-    def __init__(self,url,headers,data,method='POST',contentType = 'json'):
+    def __init__(self,url,headers,data,method='POST',contentType = 'form-data'):
         self.url =url
         self.data = data
         self.method = method
@@ -239,7 +239,7 @@ class sendAPI:
         self.headers = headers
         
     def run(self):
-        if self.method == 'POST' and self.contentType == 'json':
+        if self.method == 'POST' and self.contentType == 'form-data':
             successCount = 0
             failCount =0
             result = {}
@@ -292,7 +292,7 @@ class sendAPI:
             result.setdefault("responses",responses)
             result.setdefault("status_codes",status_codes)
             return result
-        if self.method == 'GET' and self.contentType == 'json':
+        if self.method == 'GET' and self.contentType == 'form-data':
             successCount = 0
             failCount =0
             result = {}
