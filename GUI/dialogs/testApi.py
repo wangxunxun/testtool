@@ -84,15 +84,18 @@ class TestApi(QtGui.QDialog):
         self.headersLineEdit = QtGui.QLineEdit(self) 
         self.headersLineEdit.setText('''{"apikey":"761b0c47d570195fbae8125c69d10659"}''') 
         
-        self.json_type = QtGui.QRadioButton(self)
-        self.json_type.setText(self.trUtf8("Params"))
-        self.json_type.setChecked(True)
+        self.form_type = QtGui.QRadioButton(self)
+        self.form_type.setText(self.trUtf8("Form"))
+        self.form_type.setChecked(True)
         self.excel_type = QtGui.QRadioButton(self)
         self.excel_type.setText(self.trUtf8("EXCEL"))
+        self.json_type = QtGui.QRadioButton(self)
+        self.json_type.setText(self.trUtf8("Json"))
         
         self.buttongroup1 = QtGui.QButtonGroup(self)
-        self.buttongroup1.addButton(self.json_type)
+        self.buttongroup1.addButton(self.form_type)
         self.buttongroup1.addButton(self.excel_type)
+        self.buttongroup1.addButton(self.json_type)
         
         self.get_type = QtGui.QRadioButton(self)
         self.get_type.setText(self.trUtf8("GET"))
@@ -131,8 +134,9 @@ class TestApi(QtGui.QDialog):
         self.scriptTextEdit.setText('''{"city":"beijing"}''')
 #        self.scriptTextEdit.setText('''{"phoneNumber":"18627802681","password":"1234576"}''')
         scriptlayout = QtGui.QGridLayout()
-        scriptlayout.addWidget(self.json_type,0,0)
+        scriptlayout.addWidget(self.form_type,0,0)
         scriptlayout.addWidget(self.excel_type,0,1)
+        scriptlayout.addWidget(self.json_type,0,2)
 
         
         scriptlayout.addWidget(self.url,1,0)
@@ -245,13 +249,14 @@ class TestApi(QtGui.QDialog):
         mainlayout.setStretch(1,30)
 
         self.setLayout(mainlayout)
-        self.chooseJsonType()
+        self.chooseFormType()
         QtCore.QObject.connect(self.connectButton, QtCore.SIGNAL('clicked()'), self.toExcel)
         self.chooseOutPutButton.clicked.connect(self.chooseFolder)
         self.chooseExcelButton.clicked.connect(self.chooseFile)
 #        self.connectButton.clicked.connect(self.connectMysql)
         self.runButton.clicked.connect(self.run)
-        self.json_type.clicked.connect(self.chooseJsonType)
+        self.form_type.clicked.connect(self.chooseFormType)
+        self.json_type.clicked.connect(self.chooseFormType)
         self.excel_type.clicked.connect(self.chooseExcelType)
 #        self.runButton.clicked.emit("canshu") 有参数时需要用此方法发送参数
         self.jiaochengButton.clicked.connect(self.openexcel)
@@ -326,12 +331,12 @@ class TestApi(QtGui.QDialog):
             return "POST"
         
     def chooseRadioGroup1(self):
-        if self.json_type.isChecked():
+        if self.form_type.isChecked():
             return "JSON"
         if self.excel_type.isChecked():
             return "EXCEL"
         
-    def chooseJsonType(self):
+    def chooseFormType(self):
         self.execlname.hide()
         self.execlnameLineEdit.hide()
         self.chooseExcelButton.hide()
@@ -390,7 +395,7 @@ class TestApi(QtGui.QDialog):
                 self.errorTipLable2.show()
                 return
         request_type = self.chooseRadio()
-        if self.json_type.isChecked():
+        if self.form_type.isChecked():
             if not url:
                 self.errorTipLable2.setText(self.trUtf8("url不能为空"))
                 self.errorTipLable2.show()
@@ -494,7 +499,7 @@ class TestApi(QtGui.QDialog):
             else:
                 self.errorTipLable2.setText(self.trUtf8("参数不支持该格式"))
                 self.errorTipLable2.show()
-        else:
+        elif self.excel_type.isChecked():
             if not self.urlLineEdit.text():
                 self.errorTipLable2.setText(self.trUtf8("url不能为空"))
                 self.errorTipLable2.show()
@@ -547,6 +552,8 @@ class TestApi(QtGui.QDialog):
                 self.resultTextEdit.append("-"*100)
                 self.resultTextEdit.append("-"*100)
                 self.resultTextEdit.moveCursor(QtGui.QTextCursor.End)
+        else:
+            pass
             
             
         
