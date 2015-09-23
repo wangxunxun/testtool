@@ -12,6 +12,7 @@ from win32con import SW_SHOW, SW_SHOWNOACTIVATE, SW_SHOWNORMAL
 from pymysql.constants.ER import PASSWORD_ANONYMOUS_USER
 from tools.testapi import oprMysql,sendAPI,readExcel
 import json
+from tools.CommonTool import CommonTool
 
 
 class TestApi(QtGui.QDialog):
@@ -73,10 +74,18 @@ class TestApi(QtGui.QDialog):
         self.url = QtGui.QLabel(self)
         self.url.setText(self.trUtf8("Url"))
         self.urlLineEdit = QtGui.QLineEdit(self)  
-        self.urlLineEdit.setText("http://120.24.255.213:5000/Passenger/User/Regist")
+        self.urlLineEdit.setText("http://apis.baidu.com/heweather/weather/free")
+#        self.urlLineEdit.setText("http://120.24.255.213:5000/Passenger/User/Regist")
+
+        
+        
+        self.headers = QtGui.QLabel(self)
+        self.headers.setText(self.trUtf8("Headers"))
+        self.headersLineEdit = QtGui.QLineEdit(self) 
+        self.headersLineEdit.setText('''{"apikey":"761b0c47d570195fbae8125c69d10659"}''') 
         
         self.json_type = QtGui.QRadioButton(self)
-        self.json_type.setText(self.trUtf8("JSON"))
+        self.json_type.setText(self.trUtf8("Params"))
         self.json_type.setChecked(True)
         self.excel_type = QtGui.QRadioButton(self)
         self.excel_type.setText(self.trUtf8("EXCEL"))
@@ -97,7 +106,6 @@ class TestApi(QtGui.QDialog):
         self.result.setText(self.trUtf8("Result"))
         self.resultTextEdit = QtGui.QTextEdit(self)
         
- 
 
         self.errorTipLable2 = QtGui.QLabel()      
        
@@ -118,9 +126,10 @@ class TestApi(QtGui.QDialog):
 
 
         self.script = QtGui.QLabel(self)
-        self.script.setText(self.trUtf8("Please input json info"))
+        self.script.setText(self.trUtf8("Please input params"))
         self.scriptTextEdit = QtGui.QTextEdit(self)
-        self.scriptTextEdit.setText('''{"phoneNumber":"18627802681","password":"1234576"}''')
+        self.scriptTextEdit.setText('''{"city":"beijing"}''')
+#        self.scriptTextEdit.setText('''{"phoneNumber":"18627802681","password":"1234576"}''')
         scriptlayout = QtGui.QGridLayout()
         scriptlayout.addWidget(self.json_type,0,0)
         scriptlayout.addWidget(self.excel_type,0,1)
@@ -130,16 +139,18 @@ class TestApi(QtGui.QDialog):
         scriptlayout.addWidget(self.urlLineEdit,1,1)
         scriptlayout.addWidget(self.get_type,2,0)
         scriptlayout.addWidget(self.post_type,2,1)
+        scriptlayout.addWidget(self.headers,3,0)
+        scriptlayout.addWidget(self.headersLineEdit,3,1)        
         
-        scriptlayout.addWidget(self.execlname,3,0)
-        scriptlayout.addWidget(self.execlnameLineEdit,3,1)        
-        scriptlayout.addWidget(self.chooseExcelButton,3,2)
-        scriptlayout.addWidget(self.sheetname,4,0)
-        scriptlayout.addWidget(self.chooseSheet,4,1)
+        scriptlayout.addWidget(self.execlname,4,0)
+        scriptlayout.addWidget(self.execlnameLineEdit,4,1)        
+        scriptlayout.addWidget(self.chooseExcelButton,4,2)
+        scriptlayout.addWidget(self.sheetname,5,0)
+        scriptlayout.addWidget(self.chooseSheet,5,1)
         
-        scriptlayout.addWidget(self.script,5,0)
-        scriptlayout.addWidget(self.scriptTextEdit,6,0,1,2)
-        scriptlayout.addWidget(self.runButton,7,0)
+        scriptlayout.addWidget(self.script,6,0)
+        scriptlayout.addWidget(self.scriptTextEdit,7,0,1,2)
+        scriptlayout.addWidget(self.runButton,8,0)
         scriptlayout.setSpacing(0)
 
 
@@ -245,6 +256,7 @@ class TestApi(QtGui.QDialog):
 #        self.runButton.clicked.emit("canshu") 有参数时需要用此方法发送参数
         self.jiaochengButton.clicked.connect(self.openexcel)
     def toExcel(self):
+        
         host = self.hostLineEdit.text()
         user = self.userLineEdit.text()
         passwd = self.passwdLineEdit.text()
@@ -309,15 +321,15 @@ class TestApi(QtGui.QDialog):
 
     def chooseRadio(self):
         if self.get_type.isChecked():
-            return self.get_type.text()
+            return "GET"
         if self.post_type.isChecked():
-            return self.post_type.text()
+            return "POST"
         
     def chooseRadioGroup1(self):
         if self.json_type.isChecked():
-            return self.json_type.text()
+            return "JSON"
         if self.excel_type.isChecked():
-            return self.excel_type.text()
+            return "EXCEL"
         
     def chooseJsonType(self):
         self.execlname.hide()
@@ -352,16 +364,31 @@ class TestApi(QtGui.QDialog):
 
             self.execlnameLineEdit.setText(self.file[0])
             sheets =readExcel(self.file[0]).getSheetNames()
-            print(sheets)
+
             i =0
             while i<len(sheets):
                 self.chooseSheet.addItem(sheets[i])
                 i=i+1
                        
     def run(self):
+        tool = CommonTool()
         self.errorTipLable2.hide()
         jsondata = self.scriptTextEdit.toPlainText()
         url = self.urlLineEdit.text()
+        
+        headers = self.headersLineEdit.text()
+        if headers:
+            
+            try:
+                headers = json.loads(headers)
+            except:
+                self.errorTipLable2.setText(self.trUtf8("Headers不支持该格式"))
+                self.errorTipLable2.show()
+                return
+            if not isinstance(headers, dict):
+                self.errorTipLable2.setText(self.trUtf8("Headers不支持该格式"))
+                self.errorTipLable2.show()
+                return
         request_type = self.chooseRadio()
         if self.json_type.isChecked():
             if not url:
@@ -369,40 +396,51 @@ class TestApi(QtGui.QDialog):
                 self.errorTipLable2.show()
                 return
             elif not jsondata:
-                self.errorTipLable2.setText(self.trUtf8("json不能为空"))
+                self.errorTipLable2.setText(self.trUtf8("参数不能为空"))
                 self.errorTipLable2.show()
                 return
             else :
                 try:
                     newjsondata = json.loads(jsondata)
                 except:
-                    self.errorTipLable2.setText(self.trUtf8("json格式不正确"))
+                    self.errorTipLable2.setText(self.trUtf8("参数不支持该格式"))
                     self.errorTipLable2.show()
                     return
     
     
             if isinstance(newjsondata, dict):
-                sendapi = sendAPI(url,newjsondata,request_type)
+                sendapi = sendAPI(url,headers,newjsondata,request_type)
                 result = sendapi.run()
         
                 duration = str(result.get("duration"))
         
                 responses = result.get("responses")
                 requests = result.get("requests")
+                status_codes = result.get("status_codes")
                 failCount = str(result.get("failCount"))
                 successCount = str(result.get("successCount"))
         
         
                 i = 0
                 while i <len(requests):
-                    print(responses[i])
-                    req = json.dumps(requests[i], indent=4,encoding='UTF-8', ensure_ascii=False)
-                    res = json.dumps(responses[i], indent=4,encoding='UTF-8', ensure_ascii=False)
+
+
+
+                    req = tool.changeToJson(requests[i])
+                    if isinstance(responses[i], unicode):
+                        try:
+                            res = json.loads(responses[i])
+                            res = tool.changeToJson(res)
+                        except:
+                            
+                            res = tool.changeToJson(responses[i])
+                    else:                        
+                        res = tool.changeToJson(responses[i])
+
                     self.resultTextEdit.append("request:\n"+req)
                     self.resultTextEdit.append("response:\n"+res)
-#                    print(type(requests[i]))
-#                    self.resultTextEdit.append("request:\n"+str(requests[i]))
-#                    self.resultTextEdit.append("response:\n"+responses[i])                    
+                    self.resultTextEdit.append("status_code:\n"+str(status_codes[i]))
+                
                     
                     self.resultTextEdit.append("-"*100)
                     i = i+1
@@ -415,7 +453,7 @@ class TestApi(QtGui.QDialog):
                 self.resultTextEdit.moveCursor(QtGui.QTextCursor.End)
     
             elif isinstance(newjsondata, list):
-                sendapi = sendAPI(url,newjsondata,request_type)
+                sendapi = sendAPI(url,headers,newjsondata,request_type)
                 result = sendapi.run()
         
                 duration = str(result.get("duration"))
@@ -424,14 +462,25 @@ class TestApi(QtGui.QDialog):
                 requests = result.get("requests")
                 failCount = str(result.get("failCount"))
                 successCount = str(result.get("successCount"))
+                status_codes = result.get("status_codes")
         
         
                 i = 0
                 while i <len(requests):
-                    req = json.dumps(requests[i], indent=4,encoding='UTF-8', ensure_ascii=False)
-                    res = json.dumps(responses[i], indent=4,encoding='UTF-8', ensure_ascii=False)
+                    req = tool.changeToJson(requests[i])
+
+                    if isinstance(responses[i], unicode):
+                        try:
+                            res = json.loads(responses[i])
+                            res = tool.changeToJson(res)
+                        except:
+                            
+                            res = tool.changeToJson(responses[i])
+                    else:                        
+                        res = tool.changeToJson(responses[i])
                     self.resultTextEdit.append("request:\n"+req)
                     self.resultTextEdit.append("response:\n"+res)
+                    self.resultTextEdit.append("status_code:\n"+str(status_codes[i]))
                     self.resultTextEdit.append("-"*100)
                     i = i+1
         
@@ -443,7 +492,7 @@ class TestApi(QtGui.QDialog):
                 self.resultTextEdit.moveCursor(QtGui.QTextCursor.End)
     
             else:
-                self.errorTipLable2.setText(self.trUtf8("json格式不正确"))
+                self.errorTipLable2.setText(self.trUtf8("参数不支持该格式"))
                 self.errorTipLable2.show()
         else:
             if not self.urlLineEdit.text():
@@ -463,7 +512,7 @@ class TestApi(QtGui.QDialog):
                 sheet_name = self.chooseSheet.currentText()
                 read_excel = readExcel(excel_path)
                 data = read_excel.readTable(sheet_name)
-                sendapi = sendAPI(url,data,request_type)
+                sendapi = sendAPI(url,headers,data,request_type)
                 result = sendapi.run()
                 duration = str(result.get("duration"))
         
@@ -471,15 +520,24 @@ class TestApi(QtGui.QDialog):
                 requestsdata = result.get("requests")
                 failCount = str(result.get("failCount"))
                 successCount = str(result.get("successCount"))
+                status_codes = result.get("status_codes")
         
         
                 i = 0
                 while i <len(requestsdata):
-                    req = json.dumps(requestsdata[i], indent=4,encoding='UTF-8', ensure_ascii=False)
-                    res = json.dumps(responses[i], indent=4,encoding='UTF-8', ensure_ascii=False)
+                    req = tool.changeToJson(requestsdata[i])
+                    if isinstance(responses[i], unicode):
+                        try:
+                            res = json.loads(responses[i])
+                            res = tool.changeToJson(res)
+                        except:
+                            
+                            res = tool.changeToJson(responses[i])
+                    else:                        
+                        res = tool.changeToJson(responses[i])
                     self.resultTextEdit.append("request:\n"+req)
                     self.resultTextEdit.append("response:\n"+res)
-
+                    self.resultTextEdit.append("status_code:\n"+str(status_codes[i]))
                     self.resultTextEdit.append("-"*100)
                     i = i+1
         

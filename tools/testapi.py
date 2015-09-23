@@ -13,14 +13,8 @@ from dominate.tags import table
 import datetime
 import pymysql
 import requests
-
-def zp(r):
-    try:
-        print(json.dumps(json.loads(r.text), indent=4,ensure_ascii=False, encoding="utf-8"))
-        return json.dumps(json.loads(r.text), indent=4,ensure_ascii=False, encoding="utf-8")
-    except Exception, e:
-        print r.text
-
+from tools.CommonTool import CommonTool
+tools = CommonTool()
 class oprMysql:
     def __init__(self,host,user,passwd,db,port,charset):
         self.host = host
@@ -169,7 +163,6 @@ class oprexcel:
     def saveTables(self,tablesname,tablesheader,tablesdata):
         f = xlwt.Workbook()
         for tablename in tablesname:
-            print(tablename)
             sheet1 = f.add_sheet(tablename,cell_overwrite_ok=True) 
             for i in range(0,len(tablesheader.get(tablename))):
                 sheet1.write(0,i,tablesheader.get(tablename)[i])
@@ -238,11 +231,12 @@ class readExcel():
         return tablesdata
 
 class sendAPI:
-    def __init__(self,url,data,method='POST',contentType = 'json'):
+    def __init__(self,url,headers,data,method='POST',contentType = 'json'):
         self.url =url
         self.data = data
         self.method = method
         self.contentType = contentType 
+        self.headers = headers
         
     def run(self):
         if self.method == 'POST' and self.contentType == 'json':
@@ -251,17 +245,19 @@ class sendAPI:
             result = {}
             requestsdata = []
             responses = []
-            response = {}
+            status_codes = []
+
             start = datetime.datetime.now()
             if isinstance(self.data, list):
                 
                 for i in self.data:
                     requestsdata.append(i)
-                    r = requests.post(self.url, data=i)   
 
-                    response.setdefault("text",r.text)
-                    response.setdefault("status_code",r.status_code)                
-                    responses.append(response)
+                    r = requests.post(self.url, data=i,headers=self.headers)   
+
+                    status_codes.append(r.status_code)
+                    text = tools.zp(r)
+                    responses.append(text)
 
 
                     
@@ -270,20 +266,22 @@ class sendAPI:
                     else:
                         failCount = failCount +1
             elif isinstance(self.data, dict): 
+                
                 requestsdata.append(self.data)
-                r = requests.post(self.url, data=self.data)   
 
-                response.setdefault("text",r.text)
-                response.setdefault("status_code",r.status_code) 
-            
-                responses.append(response)
+                r = requests.post(self.url, data=self.data,headers=self.headers)   
+
+
+                status_codes.append(r.status_code)
+                text = tools.zp(r)
+                responses.append(text)
                 
                 if r.status_code==200:
                     successCount = successCount +1
                 else:
                     failCount = failCount +1
             else:
-                return u"json格式不正确"
+                return u"不支持该格式"
             end = datetime.datetime.now()
             duration = end - start
             duration =  duration.seconds +float(duration.microseconds)/1000000
@@ -292,7 +290,7 @@ class sendAPI:
             result.setdefault('failCount',failCount)
             result.setdefault("requests",requestsdata)
             result.setdefault("responses",responses)
-            print(result)
+            result.setdefault("status_codes",status_codes)
             return result
         if self.method == 'GET' and self.contentType == 'json':
             successCount = 0
@@ -300,16 +298,18 @@ class sendAPI:
             result = {}
             requestsdata = []
             responses = []
-            response = {}
+
+            status_codes = []
             start = datetime.datetime.now()
             if isinstance(self.data, list):
                 
                 for i in self.data:
                     requestsdata.append(i)
-                    r = requests.get(self.url, params=i)   
-                    response.setdefault("text",r.text)
-                    response.setdefault("status_code",r.status_code)                
-                    responses.append(response)
+
+                    r = requests.get(self.url, params=i,headers=self.headers)   
+                    status_codes.append(r.status_code)
+                    text = tools.zp(r)
+                    responses.append(text)
 
 
                     
@@ -319,18 +319,19 @@ class sendAPI:
                         failCount = failCount +1
             elif isinstance(self.data, dict): 
                 requestsdata.append(self.data)
-                r = requests.get(self.url, params=self.data)   
-
-                response.setdefault("text",r.text)
-                response.setdefault("status_code",r.status_code)                
-                responses.append(response)
+                
+                r = requests.get(self.url, params=self.data,headers=self.headers)   
+                
+                status_codes.append(r.status_code)
+                text = tools.zp(r)
+                responses.append(text)
                 
                 if r.status_code==200:
                     successCount = successCount +1
                 else:
                     failCount = failCount +1
             else:
-                return u"json格式不正确"
+                return u"不支持该格式"
             end = datetime.datetime.now()
             duration = end - start
             duration =  duration.seconds +float(duration.microseconds)/1000000
@@ -339,10 +340,11 @@ class sendAPI:
             result.setdefault('failCount',failCount)
             result.setdefault("requests",requestsdata)
             result.setdefault("responses",responses)
-            print(result)
+            result.setdefault("status_codes",status_codes)
             return result
         else:
             print('no support')
+            return "no support"
             
  
                     
