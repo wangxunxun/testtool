@@ -14,7 +14,7 @@ from tools.testapi import oprMysql,sendAPI,readExcel
 import json
 from tools.CommonTool import CommonTool
 
-
+tool = CommonTool()
 class TestApi(QtGui.QDialog):
     def __init__(self, parent=None):
         super(TestApi, self).__init__(parent)
@@ -68,7 +68,7 @@ class TestApi(QtGui.QDialog):
 
         
         self.runButton = QtGui.QPushButton(self.trUtf8("Run"))
-        self.jiaochengButton = QtGui.QPushButton(self.trUtf8("常用语句查询"))
+        self.clearButton = QtGui.QPushButton(self.trUtf8("Clear"))
         
         
         self.url = QtGui.QLabel(self)
@@ -87,15 +87,19 @@ class TestApi(QtGui.QDialog):
         self.form_type = QtGui.QRadioButton(self)
         self.form_type.setText(self.trUtf8("Form"))
         self.form_type.setChecked(True)
-        self.excel_type = QtGui.QRadioButton(self)
-        self.excel_type.setText(self.trUtf8("EXCEL"))
-#        self.json_type = QtGui.QRadioButton(self)
-#        self.json_type.setText(self.trUtf8("Json"))
+        self.json_type = QtGui.QRadioButton(self)
+        self.json_type.setText(self.trUtf8("Json"))
+        self.form_excel_type = QtGui.QRadioButton(self)
+        self.form_excel_type.setText(self.trUtf8("FormExcel"))
+        self.json_excel_type = QtGui.QRadioButton(self)
+        self.json_excel_type.setText(self.trUtf8("JsonExcel"))
+
         
         self.buttongroup1 = QtGui.QButtonGroup(self)
         self.buttongroup1.addButton(self.form_type)
-        self.buttongroup1.addButton(self.excel_type)
-#        self.buttongroup1.addButton(self.json_type)
+        self.buttongroup1.addButton(self.form_excel_type)
+        self.buttongroup1.addButton(self.json_type)
+        self.buttongroup1.addButton(self.json_excel_type)
         
         self.get_type = QtGui.QRadioButton(self)
         self.get_type.setText(self.trUtf8("GET"))
@@ -129,7 +133,14 @@ class TestApi(QtGui.QDialog):
 
         hbox1 = QtGui.QHBoxLayout()
         hbox1.addWidget(self.form_type)
-        hbox1.addWidget(self.excel_type)
+        hbox1.addWidget(self.json_type)
+        hbox1.addWidget(self.form_excel_type)
+        hbox1.addWidget(self.json_excel_type)
+        
+        hbox2 = QtGui.QHBoxLayout()
+        hbox2.addWidget(self.runButton)
+        hbox2.addWidget(self.clearButton)
+
         
         self.script = QtGui.QLabel(self)
         self.script.setText(self.trUtf8("Please input params"))
@@ -137,7 +148,7 @@ class TestApi(QtGui.QDialog):
         self.scriptTextEdit.setText('''{"city":"beijing"}''')
 #        self.scriptTextEdit.setText('''{"phoneNumber":"18627802681","password":"1234576"}''')
         scriptlayout = QtGui.QGridLayout()
-        scriptlayout.addLayout(hbox1,0,0,1,1)
+        scriptlayout.addLayout(hbox1,0,0,1,2)
 #        scriptlayout.addWidget(self.json_type,0,2)
 
         
@@ -156,7 +167,7 @@ class TestApi(QtGui.QDialog):
         
         scriptlayout.addWidget(self.script,6,0)
         scriptlayout.addWidget(self.scriptTextEdit,7,0,1,2)
-        scriptlayout.addWidget(self.runButton,8,0)
+        scriptlayout.addLayout(hbox2,8,1)
         scriptlayout.setSpacing(0)
 
 
@@ -214,13 +225,14 @@ class TestApi(QtGui.QDialog):
         QtCore.QObject.connect(self.connectButton, QtCore.SIGNAL('clicked()'), self.toExcel)
         self.chooseOutPutButton.clicked.connect(self.chooseFolder)
         self.chooseExcelButton.clicked.connect(self.chooseFile)
-#        self.connectButton.clicked.connect(self.connectMysql)
+        self.clearButton.clicked.connect(self.clear)
         self.runButton.clicked.connect(self.run)
         self.form_type.clicked.connect(self.chooseFormType)
-#        self.json_type.clicked.connect(self.chooseFormType)
-        self.excel_type.clicked.connect(self.chooseExcelType)
+        self.json_type.clicked.connect(self.chooseJsonType)
+        self.form_excel_type.clicked.connect(self.chooseFormExcelType)
+        self.json_excel_type.clicked.connect(self.chooseJsonExcelType)
 #        self.runButton.clicked.emit("canshu") 有参数时需要用此方法发送参数
-        self.jiaochengButton.clicked.connect(self.openexcel)
+#        self.jiaochengButton.clicked.connect(self.openexcel)
     def toExcel(self):
         
         host = self.hostLineEdit.text()
@@ -232,28 +244,43 @@ class TestApi(QtGui.QDialog):
         output = self.outputLineEdit.text()
         name = self.savenameLineEdit.text()
         if not host:
-            self.resultTextEdit.append(u"host不能为空")
+            self.errorMessage("host不能为空")
+
+
 
         elif not user:
-            self.resultTextEdit.append(u"user不能为空")
+            self.errorMessage("user不能为空")
+
+
 
         elif not passwd:
-            self.resultTextEdit.append(u"passwd不能为空")
+            self.errorMessage("passwd不能为空")
+  
+
 
         elif not db:
-            self.resultTextEdit.append(u"db不能为空")
+            self.errorMessage("db不能为空")
+ 
+
 
         elif not port:
-            self.resultTextEdit.append(u"port不能为空")
+            self.errorMessage("port不能为空")
+
+
 
         elif not charset:
-            self.resultTextEdit.append(u"charset不能为空")
+            self.errorMessage("charset不能为空")
+ 
+
 
         elif not output:
-            self.resultTextEdit.append(u"output不能为空")
+            self.errorMessage("output不能为空")
+
+
 
         elif not name:
-            self.resultTextEdit.append(u"excel文件名不能为空")
+            self.errorMessage("excel文件名不能为空")
+
 
         else:
             try:
@@ -275,6 +302,10 @@ class TestApi(QtGui.QDialog):
                 
             
 
+    def errorMessage(self,message):
+        self.errorTipLable2.setText(self.trUtf8(message))
+        self.errorTipLable2.show()  
+        
 
     def chooseFolder(self):
         self.dir =QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8("选择文件夹"))
@@ -294,7 +325,7 @@ class TestApi(QtGui.QDialog):
     def chooseRadioGroup1(self):
         if self.form_type.isChecked():
             return "JSON"
-        if self.excel_type.isChecked():
+        if self.form_excel_type.isChecked():
             return "EXCEL"
         
     def chooseFormType(self):
@@ -305,8 +336,20 @@ class TestApi(QtGui.QDialog):
         self.chooseSheet.hide()
         self.script.show()
         self.scriptTextEdit.show()
+        self.headersLineEdit.clear()
+        
+    def chooseJsonType(self):
+        self.execlname.hide()
+        self.execlnameLineEdit.hide()
+        self.chooseExcelButton.hide()
+        self.sheetname.hide()
+        self.chooseSheet.hide()
+        self.script.show()
+        self.scriptTextEdit.show()
+        self.headersLineEdit.clear()
+        self.headersLineEdit.setText('''{"content-type":"application/json"}''')
     
-    def chooseExcelType(self):
+    def chooseFormExcelType(self):
         self.execlname.show()
         self.execlnameLineEdit.show()
         self.chooseExcelButton.show()
@@ -314,8 +357,23 @@ class TestApi(QtGui.QDialog):
         self.chooseSheet.show()
         self.script.hide()
         self.scriptTextEdit.hide()
- 
- 
+        self.headersLineEdit.clear()
+        
+    def chooseJsonExcelType(self):
+        self.execlname.show()
+        self.execlnameLineEdit.show()
+        self.chooseExcelButton.show()
+        self.sheetname.show()
+        self.chooseSheet.show()
+        self.script.hide()
+        self.scriptTextEdit.hide()
+        self.headersLineEdit.clear()
+        self.headersLineEdit.setText('''{"content-type":"application/json"}''')
+         
+         
+    def clear(self):
+        self.resultTextEdit.clear()
+   
     def chooseFile(self):
         self.file = QtGui.QFileDialog.getOpenFileName(self, self.trUtf8("选择.xls文件"), ".", self.trUtf8("Image Files(*.xls )"))
         if self.file==(u'', u''):
@@ -337,40 +395,40 @@ class TestApi(QtGui.QDialog):
                 i=i+1
                        
     def run(self):
-        tool = CommonTool()
+        
         self.errorTipLable2.hide()
         jsondata = self.scriptTextEdit.toPlainText()
         url = self.urlLineEdit.text()
-        
+        request_type = self.chooseRadio()        
         headers = self.headersLineEdit.text()
         if headers:
             
             try:
                 headers = json.loads(headers)
             except:
-                self.errorTipLable2.setText(self.trUtf8("Headers不支持该格式"))
-                self.errorTipLable2.show()
+                self.errorMessage("Headers不支持该格式")
+
                 return
             if not isinstance(headers, dict):
-                self.errorTipLable2.setText(self.trUtf8("Headers不支持该格式"))
-                self.errorTipLable2.show()
+                self.errorMessage("Headers不支持该格式")
+
                 return
-        request_type = self.chooseRadio()
+
         if self.form_type.isChecked():
             if not url:
-                self.errorTipLable2.setText(self.trUtf8("url不能为空"))
-                self.errorTipLable2.show()
+                self.errorMessage("url不能为空")
+
                 return
             elif not jsondata:
-                self.errorTipLable2.setText(self.trUtf8("参数不能为空"))
-                self.errorTipLable2.show()
+                self.errorMessage("参数不能为空")
+
                 return
             else :
                 try:
                     newjsondata = json.loads(jsondata)
                 except:
-                    self.errorTipLable2.setText(self.trUtf8("参数不支持该格式"))
-                    self.errorTipLable2.show()
+                    self.errorMessage("参数不支持该格式")
+
                     return
     
     
@@ -378,154 +436,138 @@ class TestApi(QtGui.QDialog):
                 sendapi = sendAPI(url,headers,newjsondata,request_type)
                 result = sendapi.run()
         
-                duration = str(result.get("duration"))
-        
-                responses = result.get("responses")
-                requests = result.get("requests")
-                status_codes = result.get("status_codes")
-                failCount = str(result.get("failCount"))
-                successCount = str(result.get("successCount"))
-        
-        
-                i = 0
-                while i <len(requests):
-
-
-
-                    req = tool.changeToJson(requests[i])
-                    if isinstance(responses[i], unicode):
-                        try:
-                            res = json.loads(responses[i])
-                            res = tool.changeToJson(res)
-                        except:
-                            
-                            res = tool.changeToJson(responses[i])
-                    else:                        
-                        res = tool.changeToJson(responses[i])
-
-                    self.resultTextEdit.append("request:\n"+req)
-                    self.resultTextEdit.append("response:\n"+res)
-                    self.resultTextEdit.append("status_code:\n"+str(status_codes[i]))
-                
-                    
-                    self.resultTextEdit.append("-"*100)
-                    i = i+1
-        
-                self.resultTextEdit.append("duration:"+duration+"s")
-                self.resultTextEdit.append("failCount:"+failCount)
-                self.resultTextEdit.append("successCount:"+successCount)
-                self.resultTextEdit.append("-"*100)
-                self.resultTextEdit.append("-"*100)
-                self.resultTextEdit.moveCursor(QtGui.QTextCursor.End)
+                self.saveResult(result)
     
             elif isinstance(newjsondata, list):
                 sendapi = sendAPI(url,headers,newjsondata,request_type)
                 result = sendapi.run()
         
-                duration = str(result.get("duration"))
-        
-                responses = result.get("responses")
-                requests = result.get("requests")
-                failCount = str(result.get("failCount"))
-                successCount = str(result.get("successCount"))
-                status_codes = result.get("status_codes")
-        
-        
-                i = 0
-                while i <len(requests):
-                    req = tool.changeToJson(requests[i])
-
-                    if isinstance(responses[i], unicode):
-                        try:
-                            res = json.loads(responses[i])
-                            res = tool.changeToJson(res)
-                        except:
-                            
-                            res = tool.changeToJson(responses[i])
-                    else:                        
-                        res = tool.changeToJson(responses[i])
-                    self.resultTextEdit.append("request:\n"+req)
-                    self.resultTextEdit.append("response:\n"+res)
-                    self.resultTextEdit.append("status_code:\n"+str(status_codes[i]))
-                    self.resultTextEdit.append("-"*100)
-                    i = i+1
-        
-                self.resultTextEdit.append("duration:"+duration+"s")
-                self.resultTextEdit.append("failCount:"+failCount)
-                self.resultTextEdit.append("successCount:"+successCount)
-                self.resultTextEdit.append("-"*100)
-                self.resultTextEdit.append("-"*100)
-                self.resultTextEdit.moveCursor(QtGui.QTextCursor.End)
+                self.saveResult(result)
     
             else:
-                self.errorTipLable2.setText(self.trUtf8("参数不支持该格式"))
-                self.errorTipLable2.show()
-        elif self.excel_type.isChecked():
+                self.errorMessage("参数不支持该格式")
+
+        elif self.form_excel_type.isChecked():
+            excel_path = self.execlnameLineEdit.text()
+            sheet_name = self.chooseSheet.currentText()
             if not self.urlLineEdit.text():
-                self.errorTipLable2.setText(self.trUtf8("url不能为空"))
-                self.errorTipLable2.show()
+                self.errorMessage("url不能为空")
+
             elif not self.execlnameLineEdit.text():
-                self.errorTipLable2.setText(self.trUtf8("数据文件不能为空"))
-                self.errorTipLable2.show()
+                self.errorMessage("数据文件不能为空")
+
             elif self.chooseSheet.currentText()==u"请选择":
-                
-                self.errorTipLable2.setText(self.trUtf8("表格名不能为空"))
-                self.errorTipLable2.show()      
+                self.errorMessage("表格名不能为空")
+   
+
             else:          
                 
                 
-                excel_path = self.execlnameLineEdit.text()
-                sheet_name = self.chooseSheet.currentText()
+
                 read_excel = readExcel(excel_path)
                 data = read_excel.readTable(sheet_name)
                 sendapi = sendAPI(url,headers,data,request_type)
                 result = sendapi.run()
-                duration = str(result.get("duration"))
-        
-                responses = result.get("responses")
-                requestsdata = result.get("requests")
-                failCount = str(result.get("failCount"))
-                successCount = str(result.get("successCount"))
-                status_codes = result.get("status_codes")
-        
-        
-                i = 0
-                while i <len(requestsdata):
-                    req = tool.changeToJson(requestsdata[i])
-                    if isinstance(responses[i], unicode):
-                        try:
-                            res = json.loads(responses[i])
-                            res = tool.changeToJson(res)
-                        except:
-                            
-                            res = tool.changeToJson(responses[i])
-                    else:                        
-                        res = tool.changeToJson(responses[i])
-                    self.resultTextEdit.append("request:\n"+req)
-                    self.resultTextEdit.append("response:\n"+res)
-                    self.resultTextEdit.append("status_code:\n"+str(status_codes[i]))
-                    self.resultTextEdit.append("-"*100)
-                    i = i+1
-        
-                self.resultTextEdit.append("duration:"+duration+"s")
-                self.resultTextEdit.append("failCount:"+failCount)
-                self.resultTextEdit.append("successCount:"+successCount)
-                self.resultTextEdit.append("-"*100)
-                self.resultTextEdit.append("-"*100)
-                self.resultTextEdit.moveCursor(QtGui.QTextCursor.End)
+                self.saveResult(result)
+        elif self.json_excel_type.isChecked():
+            excel_path = self.execlnameLineEdit.text()
+            sheet_name = self.chooseSheet.currentText()
+            if not self.urlLineEdit.text():
+                self.errorMessage("url不能为")
+
+            elif not self.execlnameLineEdit.text():
+                self.errorMessage("数据文件不能为空")
+
+            elif self.chooseSheet.currentText()==u"请选择":
+                self.errorMessage("表格名不能为空")
+   
+
+            else:          
+                
+                
+
+                read_excel = readExcel(excel_path)
+                data = read_excel.readTable(sheet_name)
+                sendapi = sendAPI(url,headers,json.dumps(data),request_type)
+                result = sendapi.run()
+                self.saveResult(result)
+                 
         else:
-            pass
+            if not url:
+                self.errorMessage("url不能为空")
+
+                return
+            elif not jsondata:
+                self.errorMessage("参数不能为空")
+
+                return
+            else :
+                try:
+                    newjsondata = json.loads(jsondata)
+                except:
+                    self.errorMessage("参数不支持该格式")
+
+                    return
+     
+    
+            if isinstance(newjsondata, dict):
+                sendapi = sendAPI(url,headers,json.dumps(newjsondata),request_type)
+                result = sendapi.run()
+        
+                self.saveResult(result)
+    
+            elif isinstance(newjsondata, list):
+                sendapi = sendAPI(url,headers,json.dumps(newjsondata),request_type)
+             
+                result = sendapi.run()
+        
+                self.saveResult(result)
+            else:
+                self.errorMessage("参数不支持该格式")
+
+    
+
         
         
-    def stop(self):
-        self.mysql.close() 
-        self.disConnectButton.setDisabled(True)
-        self.connectButton.setEnabled(True)
-        self.runButton.setDisabled(True)
-        self.resultTextEdit.append("已断开连接")
     def openexcel(self):
         ShellExecute(0,"open",u"Model\mysql操作.xls","","",SW_SHOW)
         
+    def saveResult(self,result):
+        
+            duration = str(result.get("duration"))
+    
+            responses = result.get("responses")
+            requests = result.get("requests")
+            failCount = str(result.get("failCount"))
+            successCount = str(result.get("successCount"))
+            status_codes = result.get("status_codes")
+    
+    
+            i = 0
+            while i <len(requests):
+                req = tool.changeToJson(requests[i])
+
+                if isinstance(responses[i], unicode):
+                    try:
+                        res = json.loads(responses[i])
+                        res = tool.changeToJson(res)
+                    except:
+                        
+                        res = tool.changeToJson(responses[i])
+                else:                        
+                    res = tool.changeToJson(responses[i])
+                self.resultTextEdit.append("request:\n"+req)
+                self.resultTextEdit.append("response:\n"+res)
+                self.resultTextEdit.append("status_code:\n"+str(status_codes[i]))
+                self.resultTextEdit.append("-"*100)
+                i = i+1
+    
+            self.resultTextEdit.append("duration:"+duration+"s")
+            self.resultTextEdit.append("failCount:"+failCount)
+            self.resultTextEdit.append("successCount:"+successCount)
+            self.resultTextEdit.append("-"*100)
+            self.resultTextEdit.append("-"*100)
+            self.resultTextEdit.moveCursor(QtGui.QTextCursor.End)
         
         
         

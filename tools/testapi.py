@@ -239,15 +239,16 @@ class sendAPI:
         self.headers = headers
         
     def run(self):
-        if self.method == 'POST' and self.contentType == 'form-data':
-            successCount = 0
-            failCount =0
-            result = {}
-            requestsdata = []
-            responses = []
-            status_codes = []
+        successCount = 0
+        failCount =0
+        result = {}
+        requestsdata = []
+        responses = []
+        status_codes = []
 
-            start = datetime.datetime.now()
+        start = datetime.datetime.now()
+        if self.method == 'POST':
+
             if isinstance(self.data, list):
                 
                 for i in self.data:
@@ -280,8 +281,34 @@ class sendAPI:
                     successCount = successCount +1
                 else:
                     failCount = failCount +1
-            else:
-                return u"不支持该格式"
+            elif isinstance(self.data, str):
+                newdata = json.loads(self.data)
+                if isinstance(newdata, dict):
+                    requestsdata.append(newdata)
+                    r = requests.post(self.url, data=self.data,headers=self.headers)   
+
+
+                    status_codes.append(r.status_code)
+                    text = tools.zp(r)
+                    responses.append(text)
+                    
+                    if r.status_code==200:
+                        successCount = successCount +1
+                    else:
+                        failCount = failCount +1
+                        
+                elif isinstance(newdata, list):
+                    for i in newdata:
+                        requestsdata.append(i)
+                        r = requests.post(self.url, data=json.dumps(i),headers=self.headers)  
+                        status_codes.append(r.status_code)
+                        text = tools.zp(r)
+                        responses.append(text)
+                        
+                        if r.status_code==200:
+                            successCount = successCount +1
+                        else:
+                            failCount = failCount +1
             end = datetime.datetime.now()
             duration = end - start
             duration =  duration.seconds +float(duration.microseconds)/1000000
@@ -292,15 +319,7 @@ class sendAPI:
             result.setdefault("responses",responses)
             result.setdefault("status_codes",status_codes)
             return result
-        if self.method == 'GET' and self.contentType == 'form-data':
-            successCount = 0
-            failCount =0
-            result = {}
-            requestsdata = []
-            responses = []
-
-            status_codes = []
-            start = datetime.datetime.now()
+        if self.method == 'GET':
             if isinstance(self.data, list):
                 
                 for i in self.data:
@@ -330,8 +349,34 @@ class sendAPI:
                     successCount = successCount +1
                 else:
                     failCount = failCount +1
-            else:
-                return u"不支持该格式"
+            elif isinstance(self.data, str):
+                newdata = json.loads(self.data)
+                if isinstance(newdata, dict):
+                    requestsdata.append(newdata)
+                    r = requests.get(self.url, params=self.data,headers=self.headers)   
+
+
+                    status_codes.append(r.status_code)
+                    text = tools.zp(r)
+                    responses.append(text)
+                    
+                    if r.status_code==200:
+                        successCount = successCount +1
+                    else:
+                        failCount = failCount +1
+                        
+                elif isinstance(newdata, list):
+                    for i in newdata:
+                        requestsdata.append(i)
+                        r = requests.get(self.url, params=json.dumps(i),headers=self.headers)  
+                        status_codes.append(r.status_code)
+                        text = tools.zp(r)
+                        responses.append(text)
+                        
+                        if r.status_code==200:
+                            successCount = successCount +1
+                        else:
+                            failCount = failCount +1
             end = datetime.datetime.now()
             duration = end - start
             duration =  duration.seconds +float(duration.microseconds)/1000000
@@ -347,7 +392,6 @@ class sendAPI:
             return "no support"
             
  
-                    
         
 
 
