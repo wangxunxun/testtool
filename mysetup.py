@@ -10,6 +10,9 @@ from cx_Freeze import setup, Executable
 from distutils.core import setup  
 import py2exe 
 
+
+
+#python mysetup.py py2exe
 # Setup
 setup ( 
        name = "Test TOOL",
